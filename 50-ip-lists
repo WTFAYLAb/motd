@@ -7,8 +7,8 @@ insert_comma () {
 
 ## Get Fail2Ban counts
 F2B="$(ufw status | grep Fail2Ban | awk '{ print $3 }')"
-F2B_COUNT="$(grep -cve '^\s*$' <<< "$F2B")"
-F2B_IP_COUNT="$(grep -v '/' <<< "$F2B" | grep -cve '^\s*$')"
+F2B_COUNT="$(grep -cve '^\s*$' <<< "${F2B}")"
+F2B_IP_COUNT="$(grep -v '/' <<< "${F2B}" | grep -cve '^\s*$')"
 F2B_IP_COUNT_TH="$(echo ${F2B_IP_COUNT} | insert_comma)"
 F2B_CIDR_COUNT="$(( F2B_COUNT - F2B_IP_COUNT ))"
 F2B_CIDR_COUNT_TH="$(echo ${F2B_CIDR_COUNT} | insert_comma)"
