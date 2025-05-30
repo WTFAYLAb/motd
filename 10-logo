@@ -1,9 +1,11 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 echo
 
-cat /etc/update-motd.d/h6lix-logo.txt \
-| LANG=en_US.UTF-8 lolcat -f -F .2
+LANG=en_US.UTF-8 \
+  lolcat \
+    -f /etc/update-motd.d/ca2ceus-logo.txt \
+    -p .6
 
 toilet -f smslant "            $(hostname)" \
 | lolcat -f -p .33
