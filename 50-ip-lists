@@ -6,7 +6,7 @@ insert_comma () {
 }
 
 ## Get Fail2Ban counts
-F2B="$(ufw status | grep Fail2Ban | awk '{ print $3 }')"
+F2B="$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0")"
 F2B_COUNT="$(grep -cve '^\s*$' <<< "${F2B}")"
 F2B_IP_COUNT="$(grep -v '/' <<< "${F2B}" | grep -cve '^\s*$')"
 F2B_IP_COUNT_TH="$(echo ${F2B_IP_COUNT} | insert_comma)"
@@ -14,7 +14,7 @@ F2B_CIDR_COUNT="$(( F2B_COUNT - F2B_IP_COUNT ))"
 F2B_CIDR_COUNT_TH="$(echo ${F2B_CIDR_COUNT} | insert_comma)"
 
 ## Get Helix Hall Of Fame counts
-HHOF="$(ufw status | grep HHoF | awk '{ print $3 }')"
+HHOF="$(/sbin/route -n | grep '\*' | awk '{ print $1,$5 }' | grep " 0")"
 HHOF_COUNT="$(grep -cve '^\s*$' <<< "${HHOF}")"
 HHOF_IP_COUNT="$(grep -v '/' <<< ${HHOF} | grep -cve '^\s*$')"
 HHOF_IP_COUNT_TH="$(echo ${HHOF_IP_COUNT} | insert_comma)"
