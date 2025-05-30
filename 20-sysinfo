@@ -16,8 +16,9 @@ PROCESSOR_COUNT=`grep -ioP 'processor\t:' /proc/cpuinfo | wc -l`
 W="\e[0;39m"
 G="\e[1;32m"
 
-echo -e "${W}system info:
-$W  Distro......: $W`cat /etc/*release | grep "PRETTY_NAME" | cut -d "=" -f 2- | sed 's/"//g'`
+echo -e "
+${W}system info:
+$W  Distro......: $W`uname -a | awk '{print $4,$5,$6,$7,$8,$9,10,$14}'`
 $W  Kernel......: $W`uname -sr`
 
 $W  Uptime......: $W`uptime -p`
