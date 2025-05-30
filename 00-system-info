@@ -1,12 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
-[ -r /etc/lsb-release ] && . /etc/lsb-release
-
-if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
-	DISTRIB_DESCRIPTION=$(lsb_release -s -d)
-fi
-
-printf "Welcome to %s %s %s\n"\
-	"$DISTRIB_DESCRIPTION"\
-	"$(uname -r)"\
+printf "Welcome to %s %s %s %s %s %s\n" \
+	"$(uname -a | awk {'print $14'})" \
+	"$(uname -o)" \
+	"$(uname -r)" \
+	"$(
+		cat /proc/cpuinfo \
+		| grep "model name" \
+		| uniq \
+		| cut -f 2 \
+		| cut -b3-
+	)" \
 	"$(uname -m)"
