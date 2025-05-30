@@ -5,7 +5,12 @@ COLUMNS=2
 GREEN="\e[1;32m"
 RED="\e[1;31m"
 UNDIM="\e[0m"
-SERVERS=( "bingo" "currencyexchange" "34swap" "chatcord" )
+SERVERS=(
+	"bingo"
+	"currencyexchange"
+	"34swap"
+	"chatcord"
+)
 
 ## Sort display
 IFS=$'\n' SERVERS=($(sort <<<"${SERVERS[*]}"))
