@@ -2,8 +2,10 @@
 
 echo
 
-cat /etc/update-motd.d/h6lix-logo.txt \
-| LANG=en_US.UTF-8 lolcat -f -F .2
+LANG=en_US.UTF-8 \
+  lolcat \
+    -f /etc/update-motd.d/h6lix-logo.txt \
+    -F .2
 
 toilet -f smslant "            $(hostname)" \
 | lolcat -f -p .33
