@@ -4,8 +4,7 @@ echo
 
 LANG=en_US.UTF-8 \
   lolcat \
-    -f /etc/update-motd.d/h6lix-logo.txt \
-    -F .2
+    -f /etc/update-motd.d/he7ix-logo.txt \
+    -p 2
 
-toilet -f smslant "            $(hostname)" \
-| lolcat -f -p .33
+echo
