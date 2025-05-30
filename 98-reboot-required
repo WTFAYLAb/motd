@@ -1,0 +1,8 @@
+REBOOT="/var/run/reboot-required"
+
+if [[ -f "$REBOOT" ]]; then
+	if [[ -s "$REBOOT.pkgs" ]]; then
+		echo; echo "ALERT: Recently installed upgrades require a reboot:"
+		cat $REBOOT.pkgs
+	fi
+fi
