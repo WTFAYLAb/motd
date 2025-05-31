@@ -6,7 +6,11 @@ if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
 	DISTRIB_DESCRIPTION=$(lsb_release -s -d)
 fi
 
-printf "Welcome to %s %s %s\n"\
+CODENAME="$(env -i bash -c '. /etc/os-release; echo $VERSION_CODENAME')"
+
+printf "Welcome to %s \"%s\" (%s %s %s)\n"\
 	"$DISTRIB_DESCRIPTION"\
+	"$CODENAME"\
+	"$(uname -o)"\
 	"$(uname -r)"\
 	"$(uname -m)"
