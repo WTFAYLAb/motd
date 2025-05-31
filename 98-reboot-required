@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 REBOOT="/var/run/reboot-required"
 
 if [[ -f "$REBOOT" ]]; then
