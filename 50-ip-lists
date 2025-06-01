@@ -35,7 +35,7 @@ RED="\e[1;31m"
 UNDIM="\e[0m"
 
 ## Display
-echo "currently banned:"
+echo;echo "currently banned:"
 printf "${UNDIM}%-20s${RED}%-10s ${UNDIM}%-20s${RED}%-10s\n${UNDIM}" \
 	"  Fail2Ban IPs......:" " ${F2B_IP_COUNT_TH}" \
 	"Fail2Ban CIDR......:" " ${F2B_CIDR_COUNT_TH}"
