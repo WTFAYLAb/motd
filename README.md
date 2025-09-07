@@ -12,20 +12,22 @@ Copy the files you want in your MOTD to `/etc/update-motd.d/`.
 Because the MOTD is built dynamically upon login, `lolcat` requires additional options to display colors and/or non-standard characters such as those that often appear in ASCII art.
 
 * `-f`, `--force`
+
    Force color even when stdout is not a tty (the MOTD is not considered a tty)
 * `LANG=en_US.UTF-8`
+
    Use as a prefix in MOTD scripts when including non-standard characters
 
 Examples:
-```bash
+```console
 LANG=en_US.UTF-8 lolcat -f caduceus-logo.txt
 ```
-```bash
+```console
 toilet -f smslant "$(hostname)" | lolcat -f
 ```
 ### Testing
 The `run-parts` command is the easiest way to test the MOTD scripts as it will run all scripts in a directory in alphanumeric order:
-```bash
+```console
 run-parts /etc/update-motd.d
 ```
 ### Customize your MOTD
@@ -39,6 +41,6 @@ Adding your own MOTD is as easy as placing an executable script in `/etc/update-
 * Scripts will execute in numerical order
 
 To make a MOTD script executable: 
-```bash
-chmod +x /etc/update-motd.d/{{##-SCRIPT-NAME}}
+```console
+chmod +x /etc/update-motd.d/{{nn-SCRIPT-NAME}}
 ```
