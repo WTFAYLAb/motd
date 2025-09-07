@@ -19,15 +19,15 @@ Because the MOTD is built dynamically upon login, `lolcat` requires additional o
    Use as a prefix in MOTD scripts when including non-standard characters
 
 Examples:
-```bash
+```console
 LANG=en_US.UTF-8 lolcat -f h6lix-logo.txt
 ```
-```bash
+```console
 toilet -f smslant "$(hostname)" | lolcat -f
 ```
 ### Testing
 The `run-parts` command is the easiest way to test the MOTD scripts as it will run all scripts in a directory in alphanumeric order:
-```bash
+```console
 run-parts /etc/update-motd.d
 ```
 ### Customize your MOTD
@@ -41,6 +41,6 @@ Adding your own MOTD is as easy as placing an executable script in `/etc/update-
 * Scripts will execute in numerical order
 
 To make a MOTD script executable: 
-```bash
+```console
 chmod +x /etc/update-motd.d/{{nn-SCRIPT-NAME}}
 ```
