@@ -7,5 +7,5 @@ LANG=en_US.UTF-8 \
     -f /etc/update-motd.d/ca2ceus-logo.txt \
     -p .6
 
-toilet -o -f mini "                      $(hostname)" \
+toilet -o -f mini "                      caduceus" \
 | lolcat -f -p .4
