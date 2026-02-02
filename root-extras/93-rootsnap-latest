@@ -1,0 +1,5 @@
+#!/bin/bash
+
+## LVM Snapshots
+echo "rootsnap:"
+/usr/local/sbin/rootsnap-latest | sed 's/^/  /'
