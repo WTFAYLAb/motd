@@ -35,6 +35,7 @@ RED="\e[1;31m"
 UNDIM="\e[0m"
 
 ## Display
+echo
 echo "currently banned:"
 printf "${UNDIM}%-20s${RED}%-10s ${UNDIM}%-20s${RED}%-10s\n${UNDIM}" \
 	"  Fail2Ban IPs......:" " ${F2B_IP_COUNT_TH}" \
