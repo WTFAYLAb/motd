@@ -1,0 +1,17 @@
+#!/bin/bash
+
+## Upgrade Notifications
+echo
+echo "Linux Kernel Details:"
+/usr/local/sbin/kernelversions | sed 's/^/  /'
+echo
+
+echo "Pending Package Updates:"
+/usr/local/sbin/listupgrades | sed 's/^/  /'
+
+REPORT=$(/usr/local/sbin/reboot-report > /dev/null)
+if [[ ${REPORT} ]]; then
+	echo
+	echo "Reboot Report:"
+	echo ${REPORT} | sed 's/^/  /'
+fi
