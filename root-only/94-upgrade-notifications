@@ -1,17 +1,11 @@
 #!/bin/bash
 
-## Upgrade Notifications
-echo
-echo "Linux Kernel Details:"
-/usr/local/sbin/kernelversions | sed 's/^/  /'
-echo
-
-echo "Pending Package Updates:"
-/usr/local/sbin/listupgrades | sed 's/^/  /'
-
-REPORT=$(/usr/local/sbin/reboot-report > /dev/null)
-if [[ ${REPORT} ]]; then
+## Use Nagios plugin to get a brief summary of apt updates
+NAG_PATH="/usr/local/nagios/libexec"
+if [[ -d ${NAG_PATH} ]]; then
 	echo
-	echo "Reboot Report:"
-	echo ${REPORT} | sed 's/^/  /'
+	echo "Pending Package Updates:"
+        ${NAG_PATH}/check_apt \
+	| cut -f1 -d"|" \
+	| sed 's/^/  /'
 fi

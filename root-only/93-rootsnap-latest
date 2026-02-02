@@ -3,4 +3,4 @@
 ## LVM Snapshots
 echo
 echo "rootsnap:"
-echo "  $(/usr/local/sbin/rootsnap-latest)"
+/usr/local/sbin/rootsnap-latest | sed 's/^/  /'
