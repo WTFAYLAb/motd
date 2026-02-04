@@ -14,6 +14,7 @@ undim="\e[0m"
 mapfile -t dfs < <(
 	df -H -x zfs -x squashfs -x tmpfs -x devtmpfs -x overlay --output=target,pcent,size \
 	| sed '/\/home\//d' \
+	| sed '/\/efi\//d' \
 	| tail -n+2
 )
 printf "\ndisk usage:\n"
