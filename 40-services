@@ -9,9 +9,7 @@ undim="\e[0m"
 
 services=("fail2ban" "ufw" "mariadb" "postfix" "dovecot" "zed" "nagios" "apache2" "nginx")
 # sort services
-IFS=$'\n' mapfile services < <(
-	sort <<<"${services[*]}"
-)
+IFS=$'\n' services=($(sort <<<"${services[*]}"))
 unset IFS
 
 service_status=()
