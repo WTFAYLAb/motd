@@ -10,4 +10,4 @@ if [[ -f "$REBOOT" ]]; then
 		echo; echo "ALERT: Recently installed upgrades require a reboot:"
 		cat $REBOOT.pkgs
 	fi
-f
+fi
