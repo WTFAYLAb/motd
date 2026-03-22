@@ -8,7 +8,7 @@ red=$(tput setaf 196)
 undim="\e[0m"
 
 services=(
-	fail2ban ufw mariadb postfix dovecot zed nagios apache2 nginx
+	"fail2ban" "ufw" "mariadb" "postfix" "dovecot" "zed" "nagios" "apache2" "nginx"
 )
 # sort services
 IFS=$'\n'
