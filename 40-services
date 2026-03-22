@@ -3,8 +3,8 @@
 # set column width
 COLUMNS=3
 # colors
-green="\e[1;32m"
-red="\e[1;31m"
+green=$(tput setaf 46)
+red=$(tput setaf 196)
 undim="\e[0m"
 
 services=("fail2ban" "ufw" "mariadb" "postfix" "zed" "nagios" "libvirtd" "apache2" "nginx")
