@@ -34,5 +34,5 @@ done
 out+="\n"
 
 printf "\nservices:\n"
-printf "%s" "$out" | column -ts $',' | sed -e 's/^/  /'
+printf "$out" | column -ts $',' | sed -e 's/^/  /'
 printf "\n"
