@@ -1,51 +1,70 @@
 #!/usr/bin/env bash
 
 ## Set function
-insert_comma () {
+insert_comma() {
 	awk '{ printf "%\047d\n", $1 }'
 }
 
 ## Get Fail2Ban counts
-F2B="$(ufw status | grep Fail2Ban | awk '{ print $3 }')"
-F2B_COUNT="$(grep -cve '^\s*$' <<< "${F2B}")"
-F2B_IP_COUNT="$(grep -v '/' <<< "${F2B}" | grep -cve '^\s*$')"
-F2B_IP_COUNT_TH="$(echo ${F2B_IP_COUNT} | insert_comma)"
-F2B_CIDR_COUNT="$(( F2B_COUNT - F2B_IP_COUNT ))"
-F2B_CIDR_COUNT_TH="$(echo ${F2B_CIDR_COUNT} | insert_comma)"
+mapfile -t F2B_CurBannedIPs < <(
+	ufw status | grep Fail2Ban | awk '{ print $3 }'
+)
+mapfile -t F2B_CurBannedIPsFiltered < <(
+	printf "%s\n" "${F2B_CurBannedIPs[@]}" | grep -v '/'
+)
+F2B_CurBannedIPCountComma=$(
+	printf "%s" ${#F2B_CurBannedIPsFiltered} | insert_comma
+)
+F2B_CurBannedCIDRCount=$((${#F2B_CurBannedIPs}-${#F2B_CurBannedIPsFiltered}))
+F2B_CurBannedCIDRCountComma=$(
+	printf "%s" "${F2B_CurBannedCIDRCount}" | insert_comma
+)
 
 ## Get Helix Hall Of Fame counts
-HHOF="$(ufw status | grep HHoF | awk '{ print $3 }')"
-HHOF_COUNT="$(grep -cve '^\s*$' <<< "${HHOF}")"
-HHOF_IP_COUNT="$(grep -v '/' <<< ${HHOF} | grep -cve '^\s*$')"
-HHOF_IP_COUNT_TH="$(echo ${HHOF_IP_COUNT} | insert_comma)"
-HHOF_CIDR_COUNT="$(( HHOF_COUNT - HHOF_IP_COUNT ))"
-HHOF_CIDR_COUNT_TH="$(echo ${HHOF_CIDR_COUNT} | insert_comma)"
+mapfile -t HHOF_IPs < <(
+	ufw status | grep HHoF | awk '{ print $3 }'
+)
+mapfile -t HHOF_IPsFiltered < <(
+	printf "%s\n" "${HHOF_IPs[@]}" | grep -v '/'
+)
+HHOF_IPCountComma=$(
+	printf "%s" ${#HHOF_IPsFiltered} | insert_comma
+)
+HHOF_CIDRCount=$((${#HHOF_IPs}-${#HHOF_IPsFiltered}))
+HHOF_CIDRCountComma=$(
+	printf "%s" ${#HHOF_CIDRCount} | insert_comma
+)
 
 ## Get Whitelist counts
-WHTLST="$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.')"
-WHTLST_COUNT="$(grep -cve '^\s*$' <<< "${WHTLST}")"
-WHTLST_IP_COUNT="$(grep -v '/' <<< "${WHTLST}" | grep -cve '^\s*$')"
-WHTLST_IP_COUNT_TH="$(echo "${WHTLST_IP_COUNT}" | insert_comma)"
-WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
-WHTLST_CIDR_COUNT_TH="$(echo ${WHTLST_CIDR_COUNT} | insert_comma)"
+mapfile -t WhtlstIPs < <(
+	showwhitelist | grep -vE '^\s*$|^\s*#|127\.'
+)
+mapfile -t WhtlstIPsFiltered < <(
+	printf "%s\n" "${WhtlstIPs[@]}" | grep -v '/'
+)
+WhtlistCIDRCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsFiltered} ))
+WhitlistIPCountComma=$(
+	printf "%s" "${#WhtlstIPs}" | insert_comma
+)
+WhitlistCIDRCountComma=$(
+	printf "%s" "${#WhtlistCIDRCount}" | insert_comma
+)
 
 ## Set colors
-GREEN="\e[1;32m"
-RED="\e[1;31m"
-UNDIM="\e[0m"
+ClrRed=$(tput setaf 196)
+ClrGrn=$(tput setaf 46)
+ClrOff=$(tput sgr0)
 
 ## Display
-echo
-echo "currently banned:"
-printf "${UNDIM}%-20s${RED}%-10s ${UNDIM}%-20s${RED}%-10s\n${UNDIM}" \
-	"  Fail2Ban IPs......:" " ${F2B_IP_COUNT_TH}" \
-	"Fail2Ban CIDR......:" " ${F2B_CIDR_COUNT_TH}"
+printf "\ncurrently banned:\n"
+printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
+	"  Fail2Ban IPs......:" " ${F2B_CurBannedIPCountComma}" \
+	"Fail2Ban CIDR......:" " ${F2B_CurBannedCIDRCountComma}"
+printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
+	"  Hall of Fame IPs..:" " ${HHOF_IPCountComma}" \
+	"Hall of Fame CIDR..:" " ${HHOF_CIDRCountComma}"
 
-printf "${UNDIM}%-20s${RED}%-10s ${UNDIM}%-20s${RED}%-10s\n${UNDIM}" \
-	"  Hall of Fame IPs..:" " ${HHOF_IP_COUNT_TH}" \
-	"Hall of Fame CIDR..:" " ${HHOF_CIDR_COUNT_TH}"
-
-echo; echo "currently whitelisted:"
-printf "${UNDIM}%-20s${GREEN}%-10s ${UNDIM}%-20s${GREEN}%-10s\n${UNDIM}" \
-	"  Whitelisted IPs...:" " ${WHTLST_IP_COUNT_TH}" \
-	"Whitelisted CIDR...:" " ${WHTLST_CIDR_COUNT_TH}"
+printf "\ncurrently whitelisted:\n"
+printf "%-20s${ClrGrn}%-10s${ClrOff} %-20s${ClrGrn}%-10s${ClrOff}\n" \
+	"  Whitelisted IPs...:" " ${WhitlistIPCountComma}" \
+	"Whitelisted CIDR...:" " ${WhitlistCIDRCountComma}"

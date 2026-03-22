@@ -1,10 +1,8 @@
 #!/usr/bin/sh
 
-echo
-
+printf "\n"
 LANG=en_US.UTF-8 \
   lolcat \
     -f /etc/update-motd.d/he7ix-logo.txt \
     -p 2
-
-echo
+printf "\n"

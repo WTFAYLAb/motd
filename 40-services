@@ -3,36 +3,41 @@
 # set column width
 COLUMNS=3
 # colors
-green="\e[1;32m"
-red="\e[1;31m"
+green=$(tput setaf 46)
+red=$(tput setaf 196)
 undim="\e[0m"
 
-services=("fail2ban" "ufw" "mariadb" "postfix" "dovecot" "zed" "nagios" "apache2" "nginx")
+services=(
+	fail2ban ufw mariadb postfix dovecot zed nagios apache2 nginx
+)
 # sort services
-IFS=$'\n' services=($(sort <<<"${services[*]}"))
+IFS=$'\n'
+mapfile services < <(
+	sort <<<"${services[*]}"
+)
 unset IFS
 
 service_status=()
 # get status of all services
 for service in "${services[@]}"; do
-    service_status+=($(systemctl is-active "$service"))
+	service_status+=($(systemctl is-active "$service"))
 done
 
 out=""
-for i in ${!services[@]}; do
-    # color green if service is active, else red
-    if [[ "${service_status[$i]}" == "active" ]]; then
-        out+="${services[$i]}:,${green}${service_status[$i]}${undim},"
-    else
-        out+="${services[$i]}:,${red}${service_status[$i]}${undim},"
-    fi
-    # insert \n every $COLUMNS column
-    if [ $((($i+1) % $COLUMNS)) -eq 0 ]; then
-        out+="\n"
-    fi
+for i in "${!services[@]}"; do
+	# color green if service is active, else red
+	if [[ "${service_status[$i]}" == "active" ]]; then
+		out+="${services[$i]}:,${green}${service_status[$i]}${undim},"
+	else
+		out+="${services[$i]}:,${red}${service_status[$i]}${undim},"
+	fi
+	# insert \n every $COLUMNS column
+	if [ $(((i+1) % COLUMNS)) -eq 0 ]; then
+		out+="\n"
+	fi
 done
 out+="\n"
 
 printf "\nservices:\n"
-printf "$out" | column -ts $',' | sed -e 's/^/  /'
+printf "%s" "$out" | column -ts $',' | sed -e 's/^/  /'
 printf "\n"
