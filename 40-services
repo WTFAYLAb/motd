@@ -7,9 +7,7 @@ green=$(tput setaf 46)
 red=$(tput setaf 196)
 undim="\e[0m"
 
-services=(
-	"fail2ban" "ufw" "mariadb" "postfix" "dovecot" "zed" "nagios" "apache2" "nginx"
-)
+services=("fail2ban" "ufw" "mariadb" "postfix" "dovecot" "zed" "nagios" "apache2" "nginx")
 # sort services
 IFS=$'\n' mapfile services < <(
 	sort <<<"${services[*]}"
