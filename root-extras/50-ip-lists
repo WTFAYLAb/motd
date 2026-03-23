@@ -12,6 +12,8 @@ mapfile -t F2B_AllBannedIPs < <(
 mapfile -t F2B_BannedCIDR < <(
 	printf "%s\n" "${F2B_AllBannedIPs[@]}" | grep -e '/'
 )
+printf "debug:\nF2B_AllBannedIPs\n%s\nF2B_BannedCIDR\n%s\n" \
+	"${F2B_AllBannedIPs[*]}" "${F2B_BannedCIDR[*]}"
 F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} )) 
 [[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCount=$(
 	echo $F2B_BannedIPCount | insert_comma
