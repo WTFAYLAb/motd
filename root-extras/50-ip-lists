@@ -13,10 +13,10 @@ mapfile -t F2B_BannedCIDR < <(
 	printf "%s\n" "${F2B_AllBannedIPs[@]}" | grep -e '/'
 )
 F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} )) 
-F2B_BannedIPCountComma=$(
+[[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCountComma=$(
 	echo $F2B_BannedIPCount | insert_comma
 )
-F2B_BannedCIDRCountComma=$(
+[[ ${#F2B_BannedCIDR} -gt 999 ]] && F2B_BannedCIDRCountComma=$(
 	echo "${#F2B_BannedCIDR}" | insert_comma
 )
 
@@ -28,10 +28,10 @@ mapfile -t HHOF_CIDR < <(
 	printf "%s\n" "${HHOF_IPs[@]}" | grep -e '/'
 )
 HHOF_IPCount=$(( ${#HHOF_IPs} - ${#HHOF_CIDR} ))
-HHOF_IPCountComma=$(
+[[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCountComma=$(
 	echo $HHOF_IPCount | insert_comma
 )
-HHOF_CIDRCountComma=$(
+[[ ${#HHOF_CIDR} -gt 999 ]] && HHOF_CIDRCountComma=$(
 	echo "${#HHOF_CIDR}" | insert_comma
 )
 
@@ -43,10 +43,10 @@ mapfile -t WhtlstIPsCIDR < <(
 	printf "%s\n" "${WhtlstIPs[@]}" | grep -e '/'
 )
 WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
-WhitlistIPCountComma=$(
+[[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCountComma=$(
 	echo $WhitlistIPCount | insert_comma
 )
-WhitlistCIDRCountComma=$(
+[[ ${#WhtlstIPsCIDR} -gt 999 ]] && WhitlistCIDRCountComma=$(
 	echo "${#WhtlstIPsCIDR}" | insert_comma
 )
 
