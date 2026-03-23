@@ -54,24 +54,29 @@ read -r HHOF_IPCount HHOF_CIDRCount < <(
 	echo "$HHOF_CIDRCount" | insert_comma
 )
 
-## Get Whitelist counts
-mapfile -t WhtlstIPs < <(
-	showwhitelist | grep -vE '^\s*$|^\s*#|127\.'
+## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
+read -r WhitlistIPCount WhitlistCIDRCount < <(
+	showwhitelist 2>/dev/null | awk '
+		/^[[:space:]]*$/ { next }
+		/^[[:space:]]*#/ { next }
+		/127\./ { next }
+		{
+			n++
+			line = $0
+			sub(/\r$/, "", line)
+			if (line ~ /\//) c++
+		}
+		END { print (n - c) + 0, c + 0 }
+	'
 )
-mapfile -t WhtlstIPsCIDR < <(
-	printf "%s\n" "${WhtlstIPs[@]}" | grep -e '/'
-)
-WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
+: "${WhitlistIPCount:=0}"
+: "${WhitlistCIDRCount:=0}"
 [[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCount=$(
-	echo $WhitlistIPCount | insert_comma
+	echo "$WhitlistIPCount" | insert_comma
 )
-if [[ ${#WhtlstIPsCIDR} -gt 999 ]]; then
-	WhitlistCIDRCount=$(
-		echo "${#WhtlstIPsCIDR}" | insert_comma
-	)
-else
-	WhitlistCIDRCount="${#WhtlstIPsCIDR}"
-fi
+[[ $WhitlistCIDRCount -gt 999 ]] && WhitlistCIDRCount=$(
+	echo "$WhitlistCIDRCount" | insert_comma
+)
 
 ## Set colors
 ClrRed=$(tput setaf 196)
