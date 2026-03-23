@@ -70,13 +70,13 @@ ClrOff=$(tput sgr0)
 ## Display
 printf "\ncurrently banned:\n"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Fail2Ban IPs......:" " ${F2B_BannedIPCount}" \
-	"Fail2Ban CIDR......:" " ${F2B_BannedCIDRCount}"
+	"  Fail2Ban IPs......:" " $F2B_BannedIPCount" \
+	"Fail2Ban CIDR......:" " $F2B_BannedCIDRCount"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Hall of Fame IPs..:" " ${HHOF_IPCount}" \
-	"Hall of Fame CIDR..:" " ${HHOF_CIDRCount}"
+	"  Hall of Fame IPs..:" " $HHOF_IPCount" \
+	"Hall of Fame CIDR..:" " $HHOF_CIDRCount"
 
 printf "\ncurrently whitelisted:\n"
 printf "%-20s${ClrGrn}%-10s${ClrOff} %-20s${ClrGrn}%-10s${ClrOff}\n" \
-	"  Whitelisted IPs...:" " ${WhitlistIPCount}" \
-	"Whitelisted CIDR...:" " ${WhitlistCIDRCount}"
+	"  Whitelisted IPs...:" " $WhitlistIPCount" \
+	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
