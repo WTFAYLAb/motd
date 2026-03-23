@@ -16,9 +16,12 @@ F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} ))
 [[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCount=$(
 	echo $F2B_BannedIPCount | insert_comma
 )
-[[ ${#F2B_BannedCIDR} -gt 999 ]] && F2B_BannedCIDRCount=$(
-	echo "${#F2B_BannedCIDR}" | insert_comma
-)
+if [[ ${#F2B_BannedCIDR} -gt 999 ]]; then
+	F2B_BannedCIDRCount=$(
+		echo "${#F2B_BannedCIDR}" | insert_comma
+	)
+else
+	F2B_BannedCIDRCount="${#F2B_BannedCIDR}"
 
 ## Get Helix Hall Of Fame counts
 mapfile -t HHOF_IPs < <(
