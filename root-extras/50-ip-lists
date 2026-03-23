@@ -22,6 +22,7 @@ if [[ ${#F2B_BannedCIDR} -gt 999 ]]; then
 	)
 else
 	F2B_BannedCIDRCount="${#F2B_BannedCIDR}"
+fi
 
 ## Get Helix Hall Of Fame counts
 mapfile -t HHOF_IPs < <(
