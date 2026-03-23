@@ -14,8 +14,8 @@ HackettLogs=$(
 		} print }' \
 	| tr ";" " " \
 	| sed "s/DOWN/Ping DOWN/g" \
-        | awk '{print $1,$2,$5,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' \
-        | sed 's/^/  /' \
+	| awk '{print $1,$2,$5,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' \
+	| sed 's/^/  /' \
 	| sed "s/WARNING/${ClrYlw}WARNING${ClrOff}/g" \
 	| sed "s/CRITICAL/${ClrRed}CRITICAL${ClrOff}/g"
 )
