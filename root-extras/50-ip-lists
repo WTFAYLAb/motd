@@ -16,7 +16,7 @@ F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} ))
 [[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCount=$(
 	echo $F2B_BannedIPCount | insert_comma
 )
-[[ ${#F2B_BannedCIDR} -gt 999 ]] && F2B_BannedCIDRCountComma=$(
+[[ ${#F2B_BannedCIDR} -gt 999 ]] && F2B_BannedCIDRCount=$(
 	echo "${#F2B_BannedCIDR}" | insert_comma
 )
 
@@ -28,10 +28,10 @@ mapfile -t HHOF_CIDR < <(
 	printf "%s\n" "${HHOF_IPs[@]}" | grep -e '/'
 )
 HHOF_IPCount=$(( ${#HHOF_IPs} - ${#HHOF_CIDR} ))
-[[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCountComma=$(
+[[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCount=$(
 	echo $HHOF_IPCount | insert_comma
 )
-[[ ${#HHOF_CIDR} -gt 999 ]] && HHOF_CIDRCountComma=$(
+[[ ${#HHOF_CIDR} -gt 999 ]] && HHOF_CIDRCount=$(
 	echo "${#HHOF_CIDR}" | insert_comma
 )
 
@@ -43,10 +43,10 @@ mapfile -t WhtlstIPsCIDR < <(
 	printf "%s\n" "${WhtlstIPs[@]}" | grep -e '/'
 )
 WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
-[[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCountComma=$(
+[[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCount=$(
 	echo $WhitlistIPCount | insert_comma
 )
-[[ ${#WhtlstIPsCIDR} -gt 999 ]] && WhitlistCIDRCountComma=$(
+[[ ${#WhtlstIPsCIDR} -gt 999 ]] && WhitlistCIDRCount=$(
 	echo "${#WhtlstIPsCIDR}" | insert_comma
 )
 
@@ -59,12 +59,12 @@ ClrOff=$(tput sgr0)
 printf "\ncurrently banned:\n"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
 	"  Fail2Ban IPs......:" " ${F2B_BannedIPCount}" \
-	"Fail2Ban CIDR......:" " ${F2B_BannedCIDRCountComma}"
+	"Fail2Ban CIDR......:" " ${F2B_BannedCIDRCount}"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Hall of Fame IPs..:" " ${HHOF_IPCountComma}" \
-	"Hall of Fame CIDR..:" " ${HHOF_CIDRCountComma}"
+	"  Hall of Fame IPs..:" " ${HHOF_IPCount}" \
+	"Hall of Fame CIDR..:" " ${HHOF_CIDRCount}"
 
 printf "\ncurrently whitelisted:\n"
 printf "%-20s${ClrGrn}%-10s${ClrOff} %-20s${ClrGrn}%-10s${ClrOff}\n" \
-	"  Whitelisted IPs...:" " ${WhitlistIPCountComma}" \
-	"Whitelisted CIDR...:" " ${WhitlistCIDRCountComma}"
+	"  Whitelisted IPs...:" " ${WhitlistIPCount}" \
+	"Whitelisted CIDR...:" " ${WhitlistCIDRCount}"
