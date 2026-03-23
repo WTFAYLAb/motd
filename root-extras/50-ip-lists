@@ -35,9 +35,13 @@ HHOF_IPCount=$(( ${#HHOF_IPs} - ${#HHOF_CIDR} ))
 [[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCount=$(
 	echo $HHOF_IPCount | insert_comma
 )
-[[ ${#HHOF_CIDR} -gt 999 ]] && HHOF_CIDRCount=$(
-	echo "${#HHOF_CIDR}" | insert_comma
-)
+if [[ ${#HHOF_CIDR} -gt 999 ]]; then 
+	HHOF_CIDRCount=$(
+		echo "${#HHOF_CIDR}" | insert_comma
+	)
+else 
+	HHOF_CIDRCount="${#HHOF_CIDR}"
+fi
 
 ## Get Whitelist counts
 mapfile -t WhtlstIPs < <(
@@ -50,9 +54,13 @@ WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
 [[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCount=$(
 	echo $WhitlistIPCount | insert_comma
 )
-[[ ${#WhtlstIPsCIDR} -gt 999 ]] && WhitlistCIDRCount=$(
-	echo "${#WhtlstIPsCIDR}" | insert_comma
-)
+if [[ ${#WhtlstIPsCIDR} -gt 999 ]]; then
+	WhitlistCIDRCount=$(
+		echo "${#WhtlstIPsCIDR}" | insert_comma
+	)
+else
+	WhitlistCIDRCount="${#WhtlstIPsCIDR}"
+fi
 
 ## Set colors
 ClrRed=$(tput setaf 196)
