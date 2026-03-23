@@ -14,10 +14,10 @@ mapfile -t F2B_BannedCIDR < <(
 )
 F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} )) 
 F2B_BannedIPCountComma=$(
-	printf "%d" $F2B_BannedIPCount | insert_comma
+	echo $F2B_BannedIPCount | insert_comma
 )
 F2B_BannedCIDRCountComma=$(
-	printf "%d" "${#F2B_BannedCIDR}" | insert_comma
+	echo "${#F2B_BannedCIDR}" | insert_comma
 )
 
 ## Get Helix Hall Of Fame counts
@@ -29,10 +29,10 @@ mapfile -t HHOF_CIDR < <(
 )
 HHOF_IPCount=$(( ${#HHOF_IPs} - ${#HHOF_CIDR} ))
 HHOF_IPCountComma=$(
-	printf "%d" $HHOF_IPCount | insert_comma
+	echo $HHOF_IPCount | insert_comma
 )
 HHOF_CIDRCountComma=$(
-	printf "%d" "${#HHOF_CIDR}" | insert_comma
+	echo "${#HHOF_CIDR}" | insert_comma
 )
 
 ## Get Whitelist counts
@@ -44,10 +44,10 @@ mapfile -t WhtlstIPsCIDR < <(
 )
 WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
 WhitlistIPCountComma=$(
-	printf "%d" $WhitlistIPCount | insert_comma
+	echo $WhitlistIPCount | insert_comma
 )
 WhitlistCIDRCountComma=$(
-	printf "%d" "${#WhtlstIPsCIDR}" | insert_comma
+	echo "${#WhtlstIPsCIDR}" | insert_comma
 )
 
 ## Set colors
