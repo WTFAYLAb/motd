@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-printf "\nLatest 'Hacketloss' entries:\n"
+ClrRed=$(tput setaf 196)
+ClrYlw=$(tput setaf 226)
+ClrOff=$(tput setaf 15)
 
 HackettLogs=$(
 	tail -5 /usr/local/src/Hackettloss/output.log \
@@ -10,7 +12,13 @@ HackettLogs=$(
 			close(cmd); 
 			sub(/\[[0-9]{10}\]/, human) 
 		} print }' \
-	| sed 's/^/  /'
+	| tr ";" " " \
+	| sed "s/DOWN/Ping DOWN/g" \
+        | awk '{print $1,$2,$5,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' \
+        | sed 's/^/  /' \
+	| sed "s/WARNING/${ClrYlw}WARNING${ClrOff}/g" \
+	| sed "s/CRITICAL/${ClrRed}CRITICAL${ClrOff}/g"
 )
 
+printf "\nLatest 'Hacketloss' entries:\n"
 printf "%s\n" "$HackettLogs"
