@@ -5,49 +5,77 @@ insert_comma() {
 	awk '{ printf "%\047d\n", $1 }'
 }
 
-## Get Fail2Ban counts
-mapfile -t F2B_CurBannedIPs < <(
-	ufw status | grep Fail2Ban | awk '{ print $3 }'
+## ufw for MOTD: PATH is often minimal; avoid two-stage mapfile + printf "${arr[@]}"
+## (huge argv, IFS/glob differences vs manual HHOF_IPs=( $(...) ), and impossible CIDR>IP mismatches).
+_UFW=$(command -v ufw 2>/dev/null) || true
+[[ -z $_UFW && -x /usr/sbin/ufw ]] && _UFW=/usr/sbin/ufw
+[[ -z $_UFW && -x /sbin/ufw ]] && _UFW=/sbin/ufw
+_UFW=${_UFW:-ufw}
+
+## Get Fail2Ban counts (one pass: same as grep + awk $3 + count / in $3)
+read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
+	COLUMNS="${COLUMNS:-320}" "$_UFW" status 2>/dev/null | awk '
+		/Fail2Ban/ {
+			n++
+			ip = $3
+			sub(/\r$/, "", ip)
+			if (ip ~ /\//) c++
+		}
+		END { print (n - c) + 0, c + 0 }
+	'
 )
-mapfile -t F2B_CurBannedIPsFiltered < <(
-	printf "%s\n" "${F2B_CurBannedIPs[@]}" | grep -v '/'
+: "${F2B_BannedIPCount:=0}"
+: "${F2B_BannedCIDRCount:=0}"
+[[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCount=$(
+	echo "$F2B_BannedIPCount" | insert_comma
 )
-F2B_CurBannedIPCountComma=$(
-	printf "%s" ${#F2B_CurBannedIPsFiltered} | insert_comma
-)
-F2B_CurBannedCIDRCount=$((${#F2B_CurBannedIPs}-${#F2B_CurBannedIPsFiltered}))
-F2B_CurBannedCIDRCountComma=$(
-	printf "%s" "${F2B_CurBannedCIDRCount}" | insert_comma
+[[ $F2B_BannedCIDRCount -gt 999 ]] && F2B_BannedCIDRCount=$(
+	echo "$F2B_BannedCIDRCount" | insert_comma
 )
 
 ## Get Helix Hall Of Fame counts
-mapfile -t HHOF_IPs < <(
-	ufw status | grep HHoF | awk '{ print $3 }'
+read -r HHOF_IPCount HHOF_CIDRCount < <(
+	COLUMNS="${COLUMNS:-320}" "$_UFW" status 2>/dev/null | awk '
+		/HHoF/ {
+			n++
+			ip = $3
+			sub(/\r$/, "", ip)
+			if (ip ~ /\//) c++
+		}
+		END { print (n - c) + 0, c + 0 }
+	'
 )
-mapfile -t HHOF_IPsFiltered < <(
-	printf "%s\n" "${HHOF_IPs[@]}" | grep -v '/'
+: "${HHOF_IPCount:=0}"
+: "${HHOF_CIDRCount:=0}"
+[[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCount=$(
+	echo "$HHOF_IPCount" | insert_comma
 )
-HHOF_IPCountComma=$(
-	printf "%s" ${#HHOF_IPsFiltered} | insert_comma
-)
-HHOF_CIDRCount=$((${#HHOF_IPs}-${#HHOF_IPsFiltered}))
-HHOF_CIDRCountComma=$(
-	printf "%s" ${#HHOF_CIDRCount} | insert_comma
+[[ $HHOF_CIDRCount -gt 999 ]] && HHOF_CIDRCount=$(
+	echo "$HHOF_CIDRCount" | insert_comma
 )
 
-## Get Whitelist counts
-mapfile -t WhtlstIPs < <(
-	showwhitelist | grep -vE '^\s*$|^\s*#|127\.'
+## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
+read -r WhitlistIPCount WhitlistCIDRCount < <(
+	showwhitelist 2>/dev/null | awk '
+		/^[[:space:]]*$/ { next }
+		/^[[:space:]]*#/ { next }
+		/127\./ { next }
+		{
+			n++
+			line = $0
+			sub(/\r$/, "", line)
+			if (line ~ /\//) c++
+		}
+		END { print (n - c) + 0, c + 0 }
+	'
 )
-mapfile -t WhtlstIPsFiltered < <(
-	printf "%s\n" "${WhtlstIPs[@]}" | grep -v '/'
+: "${WhitlistIPCount:=0}"
+: "${WhitlistCIDRCount:=0}"
+[[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCount=$(
+	echo "$WhitlistIPCount" | insert_comma
 )
-WhtlistCIDRCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsFiltered} ))
-WhitlistIPCountComma=$(
-	printf "%s" "${#WhtlstIPs}" | insert_comma
-)
-WhitlistCIDRCountComma=$(
-	printf "%s" "${#WhtlistCIDRCount}" | insert_comma
+[[ $WhitlistCIDRCount -gt 999 ]] && WhitlistCIDRCount=$(
+	echo "$WhitlistCIDRCount" | insert_comma
 )
 
 ## Set colors
@@ -58,13 +86,13 @@ ClrOff=$(tput sgr0)
 ## Display
 printf "\ncurrently banned:\n"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Fail2Ban IPs......:" " ${F2B_CurBannedIPCountComma}" \
-	"Fail2Ban CIDR......:" " ${F2B_CurBannedCIDRCountComma}"
+	"  Fail2Ban IPs......:" " $F2B_BannedIPCount" \
+	"Fail2Ban CIDR......:" " $F2B_BannedCIDRCount"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Hall of Fame IPs..:" " ${HHOF_IPCountComma}" \
-	"Hall of Fame CIDR..:" " ${HHOF_CIDRCountComma}"
+	"  Hall of Fame IPs..:" " $HHOF_IPCount" \
+	"Hall of Fame CIDR..:" " $HHOF_CIDRCount"
 
 printf "\ncurrently whitelisted:\n"
 printf "%-20s${ClrGrn}%-10s${ClrOff} %-20s${ClrGrn}%-10s${ClrOff}\n" \
-	"  Whitelisted IPs...:" " ${WhitlistIPCountComma}" \
-	"Whitelisted CIDR...:" " ${WhitlistCIDRCountComma}"
+	"  Whitelisted IPs...:" " $WhitlistIPCount" \
+	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
