@@ -6,18 +6,18 @@ insert_comma() {
 }
 
 ## Get Fail2Ban counts
-mapfile -t F2B_CurBannedIPs < <(
+mapfile -t F2B_AllBannedIPs < <(
 	ufw status | grep Fail2Ban | awk '{ print $3 }'
 )
-mapfile -t F2B_CurBannedCIDR < <(
-	printf "%s\n" "${F2B_CurBannedIPs[@]}" | grep -e '/'
+mapfile -t F2B_BannedCIDR < <(
+	printf "%s\n" "${F2B_AllBannedIPs[@]}" | grep -e '/'
 )
-F2B_CurBannedIPCount=$(( ${#F2B_CurBannedIPs} - ${#F2B_CurBannedCIDR} )) 
-F2B_CurBannedIPCountComma=$(
-	printf "%d" $F2B_CurBannedIPCount | insert_comma
+F2B_BannedIPCount=$(( ${#F2B_AllBannedIPs} - ${#F2B_BannedCIDR} )) 
+F2B_BannedIPCountComma=$(
+	printf "%d" $F2B_BannedIPCount | insert_comma
 )
-F2B_CurBannedCIDRCountComma=$(
-	printf "%d" "${#F2B_CurBannedCIDR}" | insert_comma
+F2B_BannedCIDRCountComma=$(
+	printf "%d" "${#F2B_BannedCIDR}" | insert_comma
 )
 
 ## Get Helix Hall Of Fame counts
@@ -32,7 +32,7 @@ HHOF_IPCountComma=$(
 	printf "%d" $HHOF_IPCount | insert_comma
 )
 HHOF_CIDRCountComma=$(
-	printf "%d" ${#HHOF_CIDR} | insert_comma
+	printf "%d" "${#HHOF_CIDR}" | insert_comma
 )
 
 ## Get Whitelist counts
@@ -58,8 +58,8 @@ ClrOff=$(tput sgr0)
 ## Display
 printf "\ncurrently banned:\n"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Fail2Ban IPs......:" " ${F2B_CurBannedIPCountComma}" \
-	"Fail2Ban CIDR......:" " ${F2B_CurBannedCIDRCountComma}"
+	"  Fail2Ban IPs......:" " ${F2B_BannedIPCountComma}" \
+	"Fail2Ban CIDR......:" " ${F2B_BannedCIDRCountComma}"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
 	"  Hall of Fame IPs..:" " ${HHOF_IPCountComma}" \
 	"Hall of Fame CIDR..:" " ${HHOF_CIDRCountComma}"
