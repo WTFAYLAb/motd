@@ -10,7 +10,7 @@ mapfile -t F2B_CurBannedIPs < <(
 	ufw status | grep Fail2Ban | awk '{ print $3 }'
 )
 mapfile -t F2B_CurBannedCIDR < <(
-	printf "%s\n" "${F2B_CurBannedIPs[@]}" | grep -v '/'
+	printf "%s\n" "${F2B_CurBannedIPs[@]}" | grep -e '/'
 )
 F2B_CurBannedIPCount=$(( ${#F2B_CurBannedIPs} - ${#F2B_CurBannedCIDR} )) 
 F2B_CurBannedIPCountComma=$(
@@ -25,7 +25,7 @@ mapfile -t HHOF_IPs < <(
 	ufw status | grep HHoF | awk '{ print $3 }'
 )
 mapfile -t HHOF_CIDR < <(
-	printf "%s\n" "${HHOF_IPs[@]}" | grep -v '/'
+	printf "%s\n" "${HHOF_IPs[@]}" | grep -e '/'
 )
 HHOF_IPCount=$(( ${#HHOF_IPs} - ${#HHOF_CIDR} ))
 HHOF_IPCountComma=$(
@@ -40,7 +40,7 @@ mapfile -t WhtlstIPs < <(
 	showwhitelist | grep -vE '^\s*$|^\s*#|127\.'
 )
 mapfile -t WhtlstIPsCIDR < <(
-	printf "%s\n" "${WhtlstIPs[@]}" | grep -v '/'
+	printf "%s\n" "${WhtlstIPs[@]}" | grep -e '/'
 )
 WhitlistIPCount=$(( ${#WhtlstIPs} - ${#WhtlstIPsCIDR} ))
 WhitlistIPCountComma=$(
