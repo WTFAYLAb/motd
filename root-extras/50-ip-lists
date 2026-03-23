@@ -32,7 +32,7 @@ HHOF_IPCountComma=$(
 	printf "%s" ${#HHOF_IPCount} | insert_comma
 )
 HHOF_CIDRCountComma=$(
-	printf "%s" ${#HHOF_CIDRCount} | insert_comma
+	printf "%s" ${#HHOF_CIDR} | insert_comma
 )
 
 ## Get Whitelist counts
@@ -47,7 +47,7 @@ WhitlistIPCountComma=$(
 	printf "%s" "${#WhitlistIPCount}" | insert_comma
 )
 WhitlistCIDRCountComma=$(
-	printf "%s" "${#WhtlistCIDRCount}" | insert_comma
+	printf "%s" "${#WhtlstIPsCIDR}" | insert_comma
 )
 
 ## Set colors
