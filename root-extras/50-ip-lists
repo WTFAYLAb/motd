@@ -58,7 +58,7 @@ ClrOff=$(tput sgr0)
 ## Display
 printf "\ncurrently banned:\n"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-	"  Fail2Ban IPs......:" " ${F2B_BannedIPCountComma}" \
+	"  Fail2Ban IPs......:" " ${F2B_BannedIPCount}" \
 	"Fail2Ban CIDR......:" " ${F2B_BannedCIDRCountComma}"
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
 	"  Hall of Fame IPs..:" " ${HHOF_IPCountComma}" \
