@@ -3,10 +3,12 @@
 # config
 max_usage=90
 bar_width=50
+
 # colors
+export TERM=xterm-256color
 white="\e[39m"
-green="\e[1;32m"
-red="\e[1;31m"
+green=$(tput setaf 46)
+red=$(tput setaf 196)
 dim="\e[2m"
 undim="\e[0m"
 
