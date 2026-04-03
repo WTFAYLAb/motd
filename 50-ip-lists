@@ -9,15 +9,15 @@ insert_comma () {
 F2B="$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0")"
 F2B_COUNT="$(grep -cve '^\s*$' <<< "${F2B}")"
 F2B_IP_COUNT="$(grep -v '/' <<< "${F2B}" | grep -cve '^\s*$')"
-F2B_IP_COUNT_TH="$(echo ${F2B_IP_COUNT} | insert_comma)"
+F2B_IP_COUNT_TH="$(echo "${F2B_IP_COUNT}" | insert_comma)"
 F2B_CIDR_COUNT="$(( F2B_COUNT - F2B_IP_COUNT ))"
 F2B_CIDR_COUNT_TH="$(echo ${F2B_CIDR_COUNT} | insert_comma)"
 
 ## Get Helix Hall Of Fame counts
 HHOF="$(/sbin/route -n | grep '\*' | awk '{ print $1,$5 }' | grep " 0")"
 HHOF_COUNT="$(grep -cve '^\s*$' <<< "${HHOF}")"
-HHOF_IP_COUNT="$(grep -v '/' <<< ${HHOF} | grep -cve '^\s*$')"
-HHOF_IP_COUNT_TH="$(echo ${HHOF_IP_COUNT} | insert_comma)"
+HHOF_IP_COUNT="$(grep -v '/' <<< "${HHOF}" | grep -cve '^\s*$')"
+HHOF_IP_COUNT_TH="$(echo "${HHOF_IP_COUNT}" | insert_comma)"
 HHOF_CIDR_COUNT="$(( HHOF_COUNT - HHOF_IP_COUNT ))"
 HHOF_CIDR_COUNT_TH="$(echo ${HHOF_CIDR_COUNT} | insert_comma)"
 
@@ -30,14 +30,9 @@ WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
 WHTLST_CIDR_COUNT_TH="$(echo ${WHTLST_CIDR_COUNT} | insert_comma)"
 
 ## Set colors
-<<<<<<< Updated upstream
-GREEN="\e[1;32m"
-RED="\e[1;31m"
-=======
 export TERM=xterm-256color
 GREEN=$(tput setaf 46)
 RED=$(tput setaf 196)
->>>>>>> Stashed changes
 UNDIM="\e[0m"
 
 ## Display
