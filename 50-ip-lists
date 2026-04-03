@@ -30,8 +30,14 @@ WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
 WHTLST_CIDR_COUNT_TH="$(echo ${WHTLST_CIDR_COUNT} | insert_comma)"
 
 ## Set colors
+<<<<<<< Updated upstream
 GREEN="\e[1;32m"
 RED="\e[1;31m"
+=======
+export TERM=xterm-256color
+GREEN=$(tput setaf 46)
+RED=$(tput setaf 196)
+>>>>>>> Stashed changes
 UNDIM="\e[0m"
 
 ## Display

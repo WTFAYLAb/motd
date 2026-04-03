@@ -2,8 +2,14 @@
 
 ## Set variables
 COLUMNS=2
+<<<<<<< Updated upstream
 GREEN="\e[1;32m"
 RED="\e[1;31m"
+=======
+export TERM=xterm-256color
+GREEN=$(tput setaf 46)
+RED=$(tput setaf 196)
+>>>>>>> Stashed changes
 UNDIM="\e[0m"
 SERVERS=(
 	"bingo"
@@ -18,7 +24,11 @@ unset IFS
 
 ## Get status of all node.js servers
 STATUS=()
+<<<<<<< Updated upstream
 for SERVER in ${SERVERS[@]}; do
+=======
+for SERVER in "${SERVERS[@]}"; do
+>>>>>>> Stashed changes
 	if [[ $(pgrep -f "${SERVER}") ]]; then
 		STATUS+=( "active" )
 	else
@@ -27,7 +37,11 @@ for SERVER in ${SERVERS[@]}; do
 done
 
 OUT=""
+<<<<<<< Updated upstream
 for i in ${!SERVERS[@]}; do
+=======
+for i in "${!SERVERS[@]}"; do
+>>>>>>> Stashed changes
 	if [[ "${STATUS[$i]}" == "active" ]]; then
 		OUT+="${SERVERS[$i]}:,${GREEN}${STATUS[$i]}${UNDIM},"
 	else
