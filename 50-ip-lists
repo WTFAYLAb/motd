@@ -30,8 +30,8 @@ WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
 WHTLST_CIDR_COUNT_TH="$(echo ${WHTLST_CIDR_COUNT} | insert_comma)"
 
 ## Set colors
-GREEN=$(tput setaf 46)
-RED=$(tput setaf 196)
+GREEN="\e[1;32m"
+RED="\e[1;31m"
 UNDIM="\e[0m"
 
 ## Display
