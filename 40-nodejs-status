@@ -2,8 +2,8 @@
 
 ## Set variables
 COLUMNS=2
-GREEN="\e[1;32m"
-RED="\e[1;31m"
+GREEN=$(tput setaf 46)
+RED=$(tput setaf 196)
 UNDIM="\e[0m"
 SERVERS=(
 	"bingo"
@@ -18,7 +18,7 @@ unset IFS
 
 ## Get status of all node.js servers
 STATUS=()
-for SERVER in ${SERVERS[@]}; do
+for SERVER in "${SERVERS[@]}"; do
 	if [[ $(pgrep -f "${SERVER}") ]]; then
 		STATUS+=( "active" )
 	else
@@ -27,7 +27,7 @@ for SERVER in ${SERVERS[@]}; do
 done
 
 OUT=""
-for i in ${!SERVERS[@]}; do
+for i in "${!SERVERS[@]}"; do
 	if [[ "${STATUS[$i]}" == "active" ]]; then
 		OUT+="${SERVERS[$i]}:,${GREEN}${STATUS[$i]}${UNDIM},"
 	else
