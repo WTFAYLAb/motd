@@ -118,14 +118,16 @@ printf "\ncurrently banned:\n"
 # printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
 # 	"  Fail2Ban IPs......:" " $F2B_BannedIPCount" \
 # 	"Fail2Ban CIDR......:" " $F2B_BannedCIDRCount"
+
 Count=$F2B_BannedIPCount
 color_range
 printf "%-20s${ClrRng}%-10s${ClrOff} " \
-	"  Fail2Ban IPs......:" " $F2B_BannedIPCount"
+	"  Fail2Ban IPs......:" " $Count"
+
 Count=$F2B_BannedCIDRCount
 color_range
 printf "%-20s${ClrRed}%-10s${ClrOff}\n" \
-	"Fail2Ban CIDR......:" " $F2B_BannedCIDRCount"
+	"Fail2Ban CIDR......:" " $Count"
 
 
 printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
