@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
 ## Get Fail2Ban counts
-F2B="$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0")"
-F2B_COUNT="$(grep -cve '^\s*$' <<< "${F2B}")"
-F2B_IP_COUNT="$(grep -v '/' <<< "${F2B}" | grep -cve '^\s*$')"
-F2B_CIDR_COUNT="$(( F2B_COUNT - F2B_IP_COUNT ))"
+F2B_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep -v ".0 ")
+F2B_IP_COUNT=$(grep -v '/' <<< "$F2B_IPS" | grep -cve '^\s*$')
+F2B_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep ".0 U")
+F2B_CIDR_COUNT=$(grep -v '/' <<< "$F2B_CIDR" | grep -cve '^\s*$')
 
 ## Get Helix Hall Of Fame counts
-HHOF="$(/sbin/route -n | grep '\*' | awk '{ print $1,$5 }' | grep " 0")"
-HHOF_COUNT="$(grep -cve '^\s*$' <<< "${HHOF}")"
-HHOF_IP_COUNT="$(grep -v '/' <<< "${HHOF}" | grep -cve '^\s*$')"
-HHOF_CIDR_COUNT="$(( HHOF_COUNT - HHOF_IP_COUNT ))"
+HHOF_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5}' | grep "UH")
+HHOF_IP_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_IPS")
+HHOF_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep " U " | grep " 0")
+HHOF_CIDR_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_CIDR")
 
 ## Get Whitelist counts
-WHTLST="$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.')"
-WHTLST_COUNT="$(grep -cve '^\s*$' <<< "${WHTLST}")"
-WHTLST_IP_COUNT="$(grep -v '/' <<< "${WHTLST}" | grep -cve '^\s*$')"
-WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
+WHTLST_IPS=$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep -v /)
+WHTLST_IP_COUNT=$(grep -cve '^\s*$' <<< "$WHTLST_IPS")
+WHTLST_CIDR=$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep /)
+WHTLST_CIDR_COUNT=$(grep -cve '^\s*$' <<< "$WHTLST_CIDR")
 
 ## Set colors
 export TERM=xterm-256color
