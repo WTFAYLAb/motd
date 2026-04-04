@@ -21,12 +21,6 @@ read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
 )
 : "${F2B_BannedIPCount:=0}"
 : "${F2B_BannedCIDRCount:=0}"
-# [[ $F2B_BannedIPCount -gt 999 ]] && F2B_BannedIPCount=$(
-# 	echo "$F2B_BannedIPCount" | insert_comma
-# )
-# [[ $F2B_BannedCIDRCount -gt 999 ]] && F2B_BannedCIDRCount=$(
-# 	echo "$F2B_BannedCIDRCount" | insert_comma
-# )
 
 ## Get Helix Hall Of Fame counts
 read -r HHOF_IPCount HHOF_CIDRCount < <(
@@ -42,12 +36,6 @@ read -r HHOF_IPCount HHOF_CIDRCount < <(
 )
 : "${HHOF_IPCount:=0}"
 : "${HHOF_CIDRCount:=0}"
-# [[ $HHOF_IPCount -gt 999 ]] && HHOF_IPCount=$(
-# 	echo "$HHOF_IPCount" | insert_comma
-# )
-# [[ $HHOF_CIDRCount -gt 999 ]] && HHOF_CIDRCount=$(
-# 	echo "$HHOF_CIDRCount" | insert_comma
-# )
 
 ## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
 read -r WhitlistIPCount WhitlistCIDRCount < <(
@@ -66,12 +54,6 @@ read -r WhitlistIPCount WhitlistCIDRCount < <(
 )
 : "${WhitlistIPCount:=0}"
 : "${WhitlistCIDRCount:=0}"
-# [[ $WhitlistIPCount -gt 999 ]] && WhitlistIPCount=$(
-# 	echo "$WhitlistIPCount" | insert_comma
-# )
-# [[ $WhitlistCIDRCount -gt 999 ]] && WhitlistCIDRCount=$(
-# 	echo "$WhitlistCIDRCount" | insert_comma
-# )
 
 ## Set colors
 ClrBlu=$(tput setaf 45)
@@ -109,12 +91,8 @@ insert_comma() {
 	)
 }
 
-## Display
+## Display Fail2Ban Counts
 printf "\ncurrently banned:\n"
-# printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-# 	"  Fail2Ban IPs......:" " $F2B_BannedIPCount" \
-# 	"Fail2Ban CIDR......:" " $F2B_BannedCIDRCount"
-
 Count=$F2B_BannedIPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
@@ -129,10 +107,7 @@ insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Fail2Ban CIDR......:" " $Count"
 
-# printf "%-20s${ClrRed}%-10s${ClrOff} %-20s${ClrRed}%-10s${ClrOff}\n" \
-# 	"  Hall of Fame IPs..:" " $HHOF_IPCount" \
-# 	"Hall of Fame CIDR..:" " $HHOF_CIDRCount"
-
+## Display Helix Hall of Fame Counts
 Count=$HHOF_IPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
@@ -147,6 +122,7 @@ insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Hall of Fame CIDR..:" " $Count"
 
+## Display Whitelist Counts
 printf "\ncurrently whitelisted:\n"
 printf "%-20s${ClrBlu}%-10s${ClrOff} %-20s${ClrBlu}%-10s${ClrOff}\n" \
 	"  Whitelisted IPs...:" " $WhitlistIPCount" \
