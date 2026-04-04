@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-## Set function
-insert_comma() {
-	awk '{ printf "%\047d\n", $1 }'
-}
-
 ## ufw for MOTD: PATH is often minimal; avoid two-stage mapfile + printf "${arr[@]}"
 ## (huge argv, IFS/glob differences vs manual HHOF_IPs=( $(...) ), and impossible CIDR>IP mismatches).
 _UFW=$(command -v ufw 2>/dev/null) || true
@@ -107,7 +102,9 @@ color_range() {
 	elif (( Count >= 901 )); then
 		ClrRng=196
 	fi
-	tput setaf "$ClrRng"
+}
+
+insert_comma() {
 	[[ Count -gt 999 ]] && Count=$(
 		echo "$Count" | awk '{ printf "%\047d\n", $1 }'
 	)
@@ -121,11 +118,15 @@ printf "\ncurrently banned:\n"
 
 Count=$F2B_BannedIPCount
 color_range
-printf "%-20s${ClrRng}%-10s${ClrOff} " \
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
 	"  Fail2Ban IPs......:" " $Count"
 
 Count=$F2B_BannedCIDRCount
 color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
 printf "%-20s${ClrRed}%-10s${ClrOff}\n" \
 	"Fail2Ban CIDR......:" " $Count"
 
