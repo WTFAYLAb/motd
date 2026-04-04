@@ -74,30 +74,30 @@ read -r WhitlistIPCount WhitlistCIDRCount < <(
 # )
 
 ## Set colors
-ClrRed=$(tput setaf 196)
-ClrGrn=$(tput setaf 46)
+# ClrRed=$(tput setaf 196)
+# ClrGrn=$(tput setaf 46)
 ClrOff=$(tput sgr0)
 
 color_range() {
-	if (( Count == 0 )); then
+	if [[ Count -eq 0 ]]; then
 		ClrRng=82
-	elif (( Count == 1 && Count <= 100 )); then
+	elif (( Count >= 1 && Count <= 100 )); then
 		ClrRng=154
-	elif (( Count == 101 && Count <= 200 )); then
+	elif (( Count >= 101 && Count <= 200 )); then
 		ClrRng=184
-	elif (( Count == 201 && Count <= 300 )); then
+	elif (( Count >= 201 && Count <= 300 )); then
 		ClrRng=190
-	elif (( Count == 301 && Count <= 400 )); then
+	elif (( Count >= 301 && Count <= 400 )); then
 		ClrRng=226
-	elif (( Count == 401 && Count <= 500 )); then
+	elif (( Count >= 401 && Count <= 500 )); then
 		ClrRng=220
-	elif (( Count == 501 && Count <= 600 )); then
+	elif (( Count >= 501 && Count <= 600 )); then
 		ClrRng=214
-	elif (( Count == 601 && Count <= 700 )); then
+	elif (( Count >= 601 && Count <= 700 )); then
 		ClrRng=208
-	elif (( Count == 701 && Count <= 800 )); then
+	elif (( Count >= 701 && Count <= 800 )); then
 		ClrRng=202
-	elif (( Count == 801 && Count <= 900 )); then
+	elif (( Count >= 801 && Count <= 900 )); then
 		ClrRng=160
 	elif (( Count >= 901 )); then
 		ClrRng=196
