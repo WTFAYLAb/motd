@@ -74,8 +74,7 @@ read -r WhitlistIPCount WhitlistCIDRCount < <(
 # )
 
 ## Set colors
-# ClrRed=$(tput setaf 196)
-# ClrGrn=$(tput setaf 46)
+ClrBlu=$(tput setaf 45)
 ClrOff=$(tput sgr0)
 
 color_range() {
@@ -149,20 +148,6 @@ printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Hall of Fame CIDR..:" " $Count"
 
 printf "\ncurrently whitelisted:\n"
-# printf "%-20s${ClrGrn}%-10s${ClrOff} %-20s${ClrGrn}%-10s${ClrOff}\n" \
-# 	"  Whitelisted IPs...:" " $WhitlistIPCount" \
-# 	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
-
-Count=$WhitlistIPCount
-color_range
-SetClrRange=$(tput setaf "$ClrRng")
-insert_comma
-printf "%-20s${SetClrRange}%-10s${ClrOff} " \
-	"  Whitelisted IPs...:" " $Count"
-
-Count=$WhitlistCIDRCount
-color_range
-SetClrRange=$(tput setaf "$ClrRng")
-insert_comma
-printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
-	"Whitelisted CIDR...:" " $Count"
+printf "%-20s${ClrBlu}%-10s${ClrOff} %-20s${ClrBlu}%-10s${ClrOff}\n" \
+	"  Whitelisted IPs...:" " $WhitlistIPCount" \
+	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
