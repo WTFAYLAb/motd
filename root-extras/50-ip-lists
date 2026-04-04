@@ -91,6 +91,12 @@ insert_comma() {
 	)
 }
 
+## Display Whitelist Counts
+printf "\ncurrently whitelisted:\n"
+printf "%-20s${ClrBlu}%-10s${ClrOff} %-20s${ClrBlu}%-10s${ClrOff}\n" \
+	"  Whitelisted IPs...:" " $WhitlistIPCount" \
+	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
+
 ## Display Fail2Ban Counts
 printf "\ncurrently banned:\n"
 Count=$F2B_BannedIPCount
@@ -121,9 +127,3 @@ SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Hall of Fame CIDR..:" " $Count"
-
-## Display Whitelist Counts
-printf "\ncurrently whitelisted:\n"
-printf "%-20s${ClrBlu}%-10s${ClrOff} %-20s${ClrBlu}%-10s${ClrOff}\n" \
-	"  Whitelisted IPs...:" " $WhitlistIPCount" \
-	"Whitelisted CIDR...:" " $WhitlistCIDRCount"
