@@ -19,6 +19,7 @@ WHTLST_IP_COUNT="$(grep -v '/' <<< "${WHTLST}" | grep -cve '^\s*$')"
 WHTLST_CIDR_COUNT="$(( WHTLST_COUNT - WHTLST_IP_COUNT ))"
 
 ## Set colors
+export TERM=xterm-256color
 ClrBlu=$(tput setaf 45)
 ClrOff=$(tput sgr0)
 
