@@ -1,3 +1,6 @@
 #!/bin/env bash
 
+export TERM=xterm-256color
+tput setaf 105
 cat /opt/etc/update-motd.d/legba2.txt
+tput sgr0
