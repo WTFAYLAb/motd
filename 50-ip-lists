@@ -3,11 +3,11 @@
 ## Get Fail2Ban counts
 F2B_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep -v ".0 ")
 F2B_IP_COUNT=$(grep -v '/' <<< "$F2B_IPS" | grep -cve '^\s*$')
-F2B_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep ".0 U")
+F2B_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep ".0 U ")
 F2B_CIDR_COUNT=$(grep -v '/' <<< "$F2B_CIDR" | grep -cve '^\s*$')
 
 ## Get Helix Hall Of Fame counts
-HHOF_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5}' | grep "UH")
+HHOF_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5}' | grep "UH" | grep " 0")
 HHOF_IP_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_IPS")
 HHOF_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep " U " | grep " 0")
 HHOF_CIDR_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_CIDR")
