@@ -5,3 +5,4 @@ LANG=en_US.UTF-8 \
 	lolcat \
 		-f /etc/update-motd.d/remora-logo.txt \
 		-p 1
+printf "\n"
