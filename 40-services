@@ -9,7 +9,7 @@ green=$(tput setaf 46)
 red=$(tput setaf 196)
 undim="\e[0m"
 
-services=("casaos" "ufw" "docker" "nagios-nrpe-server" "ncpa" "nagios" "tailscaled")
+services=("casaos" "ufw" "docker" "nagios-nrpe-server" "ncpa" "tailscaled")
 # sort services
 IFS=$'\n' services=($(sort <<<"${services[*]}"))
 unset IFS
