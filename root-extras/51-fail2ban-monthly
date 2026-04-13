@@ -34,10 +34,7 @@ for Jail in "${Jails[@]}"; do
 	Unbans=${Unbans:-0} # default value
 	Bans=$(( Bans + Restores ))
 	Diff=$(( Bans - Unbans))
-	Out+=$(
-		printf "%s, %+3s Bans, %+3s unbans, %+3s active" \
-		"${Jail}" "${Bans}" "${Unbans}" "${Diff}" 
-	) "\n"
+	Out+=$(printf "${Jail}, %+3s bans, %+3s unbans, %+3s active" ${Bans} "${Unbans}" ${Diff})"\n"
 done
 
 printf "\nfail2ban status (monthly):\n"
