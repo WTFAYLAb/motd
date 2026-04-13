@@ -38,6 +38,7 @@ for Jail in "${Jails[@]}"; do
 done
 
 printf "\nfail2ban status (monthly):\n"
-printf %s "$Out" \
+# shellcheck disable=SC2059
+printf "$Out" \
 | column -ts $',' \
 | sed -e 's/^/  /'
