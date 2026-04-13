@@ -2,14 +2,14 @@
 
 ## ufw for MOTD: PATH is often minimal; avoid two-stage mapfile + printf "${arr[@]}"
 ## (huge argv, IFS/glob differences vs manual HHOF_IPs=( $(...) ), and impossible CIDR>IP mismatches).
-_UFW=$(command -v ufw 2>/dev/null) || true
-[[ -z $_UFW && -x /usr/sbin/ufw ]] && _UFW=/usr/sbin/ufw
-[[ -z $_UFW && -x /sbin/ufw ]] && _UFW=/sbin/ufw
-_UFW=${_UFW:-ufw}
+Exec_ufw=$(command -v ufw 2>/dev/null) || true
+[[ -z $Exec_ufw && -x /usr/sbin/ufw ]] && Exec_ufw=/usr/sbin/ufw
+[[ -z $Exec_ufw && -x /sbin/ufw ]] && Exec_ufw=/sbin/ufw
+Exec_ufw=${Exec_ufw:-ufw}
 
-## Get Fail2Ban counts (one pass: same as grep + awk $3 + count / in $3)
+## Get Fail2Ban counts
 read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$_UFW" status 2>/dev/null | awk '
+	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null | awk '
 		/Fail2Ban/ {
 			n++
 			ip = $3
@@ -24,10 +24,12 @@ read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
 
 ## Get Helix Hall Of Fame counts
 read -r HHOF_IPCount HHOF_CIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$_UFW" status 2>/dev/null | awk '
+	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null \
+	| awk '/DENY OUT/' \
+	| awk '
 		/HHoF/ {
 			n++
-			ip = $3
+			ip = $1
 			sub(/\r$/, "", ip)
 			if (ip ~ /\//) c++
 		}
