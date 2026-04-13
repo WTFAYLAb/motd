@@ -35,12 +35,12 @@ for Jail in "${Jails[@]}"; do
 	Bans=$(( Bans + Restores ))
 	Diff=$(( Bans - Unbans))
 	Out+=$(
-		printf "%s, %+3s Bans, %+3s unbans, %+3s active\n" \
-		"${Jail}" "${Bans}" "${Unbans}" "${Diff}"
-	)
+		printf "%s, %+3s Bans, %+3s unbans, %+3s active" \
+		"${Jail}" "${Bans}" "${Unbans}" "${Diff}" 
+	) "\n"
 done
 
 printf "\nfail2ban status (monthly):\n"
-printf "$Out" \
+printf %s "$Out" \
 | column -ts $',' \
 | sed -e 's/^/  /'
