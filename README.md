@@ -11,18 +11,16 @@ Copy the files you want in your MOTD to `/etc/update-motd.d/`.
 ### Tips for Using `lolcat` with MOTD
 Because the MOTD is built dynamically upon login, `lolcat` requires additional options to display colors and/or non-standard characters such as those that often appear in ASCII art.
 
-* `-f`, `--force`
-
-   Force color even when stdout is not a tty (the MOTD is not considered a tty)
-* `LANG=en_US.UTF-8`
-
-   Use as a prefix in MOTD scripts when including non-standard characters
+| Option | Definition |
+|--------|------------|
+| `-f`, `--force` | Force color even when stdout is not a tty (the MOTD is not considered a tty) |
+| `LANG=en_US.UTF-8` | Use as a prefix in MOTD scripts when including non-standard characters |
 
 Examples:
-```console
+```bash
 LANG=en_US.UTF-8 lolcat -f he7ix-logo.txt
 ```
-```console
+```bash
 toilet -f smslant "$(hostname)" | lolcat -f
 ```
 ### Testing
