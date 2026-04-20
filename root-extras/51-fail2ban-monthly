@@ -2,7 +2,7 @@
 
 Logfiles=(/var/log/fail2ban.log /var/log/fail2ban.log.1)
 mapfile -t Lines < <(
-	grep -hioP '(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' "${Logfiles[@]}" \
+	grep -ahioP '(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' "${Logfiles[@]}" \
 	| sort \
 	| uniq -c
 )
