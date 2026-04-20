@@ -1,12 +1,12 @@
 #!/bin/env bash
 
 ## Set variables
-COLUMNS=2
+Columns=2
 export TERM=xterm-256color
-GREEN=$(tput setaf 46)
-RED=$(tput setaf 196)
-UNDIM="\e[0m"
-SERVERS=(
+ClrGrn=$(tput setaf 46)
+ClrRed=$(tput setaf 196)
+ClrOff="\e[0m"
+Servers=(
 	"bingo"
 	"currencyexchange"
 	"34swap"
@@ -14,33 +14,34 @@ SERVERS=(
 )
 
 ## Sort display
-IFS=$'\n' SERVERS=($(sort <<<"${SERVERS[*]}"))
+IFS=$'\n' read -ra Servers <<< "$(sort <<<"${Servers[*]}")"
 unset IFS
 
 ## Get status of all node.js servers
-STATUS=()
-for SERVER in "${SERVERS[@]}"; do
-	if [[ $(pgrep -f "${SERVER}") ]]; then
-		STATUS+=( "active" )
+Status=()
+for Server in "${Servers[@]}"; do
+	if [[ $(pgrep -f "${Server}") ]]; then
+		Status+=( "active" )
 	else
-		STATUS+=( "inactive" )
+		Status+=( "inactive" )
 	fi
 done
 
-OUT=""
-for i in "${!SERVERS[@]}"; do
-	if [[ "${STATUS[$i]}" == "active" ]]; then
-		OUT+="${SERVERS[$i]}:,${GREEN}${STATUS[$i]}${UNDIM},"
+Out=
+for i in "${!Servers[@]}"; do
+	if [[ "${Status[$i]}" == "active" ]]; then
+		Clr=$ClrGrn
 	else
-		OUT+="${SERVERS[$i]}:,${RED}${STATUS[$i]}${UNDIM},"
+		Clr=$ClrRed
 	fi
+	Out+="${Servers[$i]}:,${Clr}${Status[$i]}${ClrOff},"
 
 	## Insert newline every column
-	if [ $(((i+1) % COLUMNS)) -eq 0 ]; then
-		OUT+="\n"
+	if [ $(((i+1) % Columns)) -eq 0 ]; then
+		Out+="\n"
 	fi
 done
 
 ## Print things on the screen
-echo; echo "Node.js Servers:"
-echo -e "${OUT}" | column -ts $',' | sed -e 's/^/  /'
+printf "\nNode.js Servers:\n"
+printf %s "$Out" | column -ts $',' | sed -e 's/^/  /'

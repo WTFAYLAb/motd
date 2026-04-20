@@ -1,22 +1,62 @@
 #!/usr/bin/env bash
 
 ## Get Fail2Ban counts
-F2B_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep -v ".0 ")
-F2B_IP_COUNT=$(grep -v '/' <<< "$F2B_IPS" | grep -cve '^\s*$')
-F2B_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep -v " 0" | grep ".0 U ")
-F2B_CIDR_COUNT=$(grep -v '/' <<< "$F2B_CIDR" | grep -cve '^\s*$')
+Fail2BanIPs=$(
+	/sbin/route -n \
+	| grep '\*' \
+	| awk '{ print $1,$4,$5 }' \
+	| grep -v " 0" \
+	| grep -v ".0 "
+)
+Fail2banIPCount=$(
+	grep -v '/' <<< "$Fail2BanIPs" | grep -cve '^\s*$'
+)
+Fail2BanCIDR=$(
+	/sbin/route -n \
+	| grep '\*' \
+	| awk '{ print $1,$4,$5 }' \
+	| grep -v " 0" \
+	| grep ".0 U "
+)
+Fail2BanCIDRCount=$(
+	grep -v '/' <<< "$Fail2BanCIDR" | grep -cve '^\s*$'
+)
 
 ## Get Helix Hall Of Fame counts
-HHOF_IPS=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5}' | grep "UH" | grep " 0")
-HHOF_IP_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_IPS")
-HHOF_CIDR=$(/sbin/route -n | grep '\*' | awk '{ print $1,$4,$5 }' | grep " U " | grep " 0")
-HHOF_CIDR_COUNT=$(grep -cve '^\s*$' <<< "$HHOF_CIDR")
+HHoF_IPs=$(
+	/sbin/route -n \
+	| grep '\*' \
+	| awk '{ print $1,$4,$5}' \
+	| grep "UH" \
+	| grep " 0"
+)
+HHoF_IPCount=$(
+	grep -cve '^\s*$' <<< "$HHoF_IPs"
+)
+HHoF_CIDR=$(
+	/sbin/route -n \
+	| grep '\*' \
+	| awk '{ print $1,$4,$5 }' \
+	| grep " U " \
+	| grep " 0"
+)
+HHoF_CIDRCount=$(
+	grep -cve '^\s*$' <<< "$HHoF_CIDR"
+)
 
 ## Get Whitelist counts
-WHTLST_IPS=$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep -v /)
-WHTLST_IP_COUNT=$(grep -cve '^\s*$' <<< "$WHTLST_IPS")
-WHTLST_CIDR=$(showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep /)
-WHTLST_CIDR_COUNT=$(grep -cve '^\s*$' <<< "$WHTLST_CIDR")
+WhitelistedIPs=$(
+	showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep -v /
+)
+WhitelistedIPsCount=$(
+	grep -cve '^\s*$' <<< "$WhitelistedIPs"
+)
+WhitelistedCIDR=$(
+	showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep /
+)
+WhitelistedCIDRCount=$(
+	grep -cve '^\s*$' <<< "$WhitelistedCIDR"
+)
 
 ## Set colors
 export TERM=xterm-256color
@@ -57,26 +97,26 @@ insert_comma() {
 
 ## Display Whitelist Counts
 printf "\ncurrently whitelisted:\n"
-Count=$WHTLST_IP_COUNT
+Count=$WhitelistedIPsCount
 insert_comma
 printf "%-20s${ClrBlu}%-10s${ClrOff}" \
 	"  Whitelisted IPs...:" " $Count" \
 
-Count=$WHTLST_CIDR_COUNT
+Count=$WhitelistedCIDRCount
 insert_comma
 printf "%-20s${ClrBlu}%-10s${ClrOff}\n" \
  	"Whitelisted CIDR...:" " $Count"
 
 ## Display Fail2Ban Counts
 printf "\ncurrently banned:\n"
-Count=$F2B_IP_COUNT
+Count=$Fail2banIPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
 	"  Fail2Ban IPs......:" " $Count"
 
-Count=$F2B_CIDR_COUNT
+Count=$Fail2BanCIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
@@ -84,14 +124,14 @@ printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Fail2Ban CIDR......:" " $Count"
 
 ## Display Helix Hall of Fame Counts
-Count=$HHOF_IP_COUNT
+Count=$HHoF_IPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
 	"  Hall of Fame IPs..:" " $Count"
 
-Count=$HHOF_CIDR_COUNT
+Count=$HHoF_CIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma

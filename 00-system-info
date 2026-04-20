@@ -1,7 +1,7 @@
 #!/bin/env bash
 
-printf "Welcome to %s %s %s\n  %s %s %s\n" \
-	"$(uname -a | awk {'print $14'})" \
+printf "Welcome to %s %s %s\n  %s %s\n" \
+	"$(uname -a | awk '{ print $14 }')" \
 	"$(uname -o)" \
 	"$(uname -r)" \
 	"$(
