@@ -7,14 +7,16 @@ ClrGrn=$(tput setaf 46)
 ClrRed=$(tput setaf 196)
 ClrOff=$(tput sgr0)
 Servers=(
-	"bingo"
-	"currencyexchange"
-	"34swap"
-	"chatcord"
+	bingo
+	currencyexchange
+	34swap
+	chatcord
 )
 
 ## Sort display
-IFS=$'\n' read -r Servers <<< "$(sort <<<"${Servers[*]}")"
+mapfile -t Servers < <(
+	printf "%s\n" "${Servers[@]}" | sort
+)
 unset IFS
 
 ## Get status of all node.js servers
