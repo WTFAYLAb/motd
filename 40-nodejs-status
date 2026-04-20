@@ -44,4 +44,4 @@ done
 
 ## Print things on the screen
 printf "\nNode.js Servers:\n"
-echo -e "%s" "$Out" | column -ts $',' | sed -e 's/^/  /'
+echo -e "$Out" | column -ts $',' | sed -e 's/^/  /'
