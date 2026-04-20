@@ -5,7 +5,7 @@ Columns=2
 export TERM=xterm-256color
 ClrGrn=$(tput setaf 46)
 ClrRed=$(tput setaf 196)
-ClrOff="\e[0m"
+ClrOff=$(tput sgr0)
 Servers=(
 	"bingo"
 	"currencyexchange"
