@@ -14,13 +14,13 @@ Servers=(
 )
 
 ## Sort display
-IFS=$'\n' read -ra Servers <<< "$(sort <<<"${Servers[*]}")"
+IFS=$'\n' read -r Servers <<< "$(sort <<<"${Servers[*]}")"
 unset IFS
 
 ## Get status of all node.js servers
 Status=()
 for Server in "${Servers[@]}"; do
-	if [[ $(pgrep -f "${Server}") ]]; then
+	if pgrep -f "$Server" > /dev/null; then
 		Status+=( "active" )
 	else
 		Status+=( "inactive" )
@@ -44,4 +44,4 @@ done
 
 ## Print things on the screen
 printf "\nNode.js Servers:\n"
-printf %s "$Out" | column -ts $',' | sed -e 's/^/  /'
+printf %s "$Out\n" | column -ts $',' | sed -e 's/^/  /'
