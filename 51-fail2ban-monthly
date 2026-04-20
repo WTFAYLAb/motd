@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-Logfiles=(/var/log/fail2ban.log /var/log/fail2ban.log.1)
+Logfiles=(/opt/var/log/fail2ban.log /opt/var/log/fail2ban.log.1)
 mapfile -t Lines < <(
 	grep -ahioP '(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' "${Logfiles[@]}" \
 	| sort \
