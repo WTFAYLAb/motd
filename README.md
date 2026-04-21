@@ -12,10 +12,10 @@ Copy the files you want in your MOTD to `/etc/update-motd.d/`.
 Because the MOTD is built dynamically upon login, `lolcat` requires additional options to display colors and/or non-standard characters such as those that often appear in ASCII art.
 
 | Option | Definition |
-|--------|------------|
+|------------------------------|------------|
 | `-f`, `--force` | Force color even when stdout is not a tty (the MOTD is not considered a tty) |
 | `LANG=en_US.UTF-8` | Use as a prefix in MOTD scripts when including non-standard characters |
-| export TERM=xterm-256color | Use as a prefix in MOTD scripts to display colors when using the `tput` command | 
+| `export TERM=xterm-256color` | Use as a prefix in MOTD scripts to display colors when using the `tput` command | 
 
 Examples:
 ```bash
