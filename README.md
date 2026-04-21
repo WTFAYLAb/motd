@@ -19,6 +19,6 @@ Adding your own MOTD is as easy as placing an executable script in `/opt/etc/upd
 * Scripts will execute in numerical order
 
 To make a MOTD script executable: 
-```console
-chmod +x /etc/update-motd.d/{{nn-SCRIPT-NAME}}
+```bash
+chmod +x /etc/update-motd.d/{{ <NN>-<SCRIPT-NAME> }}
 ```

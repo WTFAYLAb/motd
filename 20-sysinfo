@@ -1,17 +1,44 @@
-#!/bin/bash
+#!/bin/env bash
 
-# get load averages
-IFS=" " read LOAD1 LOAD5 LOAD15 <<<"$(cat /proc/loadavg | awk '{ print $1,$2,$3 }')"
-# get free memory
-IFS=" " read USED AVAIL TOTAL <<<"$(free -htm | grep "Mem" | awk {'print $3,$7,$2'})"
-# get processes
-PROCESS=`ps -eo user=|sort|uniq -c | awk '{ print $2 " " $1 }'`
-PROCESS_ALL=`echo "$PROCESS"| awk {'print $2'} | awk '{ SUM += $1} END { print SUM }'`
-PROCESS_ROOT=`echo "$PROCESS"| grep root | awk {'print $2'}`
-PROCESS_USER=`echo "$PROCESS"| grep -v root | awk {'print $2'} | awk '{ SUM += $1} END { print SUM }'`
-# get processors
-PROCESSOR_NAME=`grep "model name" /proc/cpuinfo | cut -d ' ' -f3- | awk {'print $0'} | head -1`
-PROCESSOR_COUNT=`grep -ioP 'processor\t:' /proc/cpuinfo | wc -l`
+## Get load averages
+IFS=" " read -r Load1 Load5 Load15 <<<"$(
+	cat /proc/loadavg | awk '{ print $1,$2,$3 }'
+)"
+
+## Get free memory
+IFS=" " read -r Used Avail Total <<<"$(
+	free -htm | grep "Mem" | awk '{ print $3,$7,$2 }'
+)"
+
+## Get processes
+Proc=$(
+	ps -eo user=|sort|uniq -c | awk '{ print $2 " " $1 }'
+)
+ProcAll=$(
+	echo "$Proc" \
+	| awk '{ print $2 }' \
+	| awk '{ SUM += $1} END { print SUM }'
+)
+ProcRoot=$(
+	echo "$Proc" | grep root | awk '{ print $2 }'
+)
+ProcUser=$(
+	echo "$Proc" \
+	| grep -v root \
+	| awk '{ print $2 }' \
+	| awk '{ SUM += $1} END { print SUM }'
+)
+
+## Get processors
+ProcName=$(
+	grep "model name" /proc/cpuinfo \
+	| cut -d ' ' -f3- \
+	| awk '{ print $0 }' \
+	| head -1
+)
+ProcessorCount=$(
+	grep -ioP 'processor\t:' /proc/cpuinfo | wc -l
+)
 
 export TERM=xterm-256color
 W="\e[0;39m"
@@ -19,12 +46,13 @@ G=$(tput setaf 46)
 
 echo -e "
 ${W}system info:
-$W  Distro......: $W`uname -a | awk '{print $4,$5,$6,$7,$8,$9,10,$14}'`
-$W  Kernel......: $W`uname -sr`
+${W}  Distro......: ${W}$(uname -a | awk '{ print $4,$5,$6,$7,$8,$9,10,$14 }')
+${W}  Kernel......: ${W}$(uname -sr)
 
-$W  Uptime......: $W`uptime -p`
-$W  Load........: $G$LOAD1$W (1m), $G$LOAD5$W (5m), $G$LOAD15$W (15m)
-$W  Processes...:$W $G$PROCESS_ROOT$W (root), $G$PROCESS_USER$W (user), $G$PROCESS_ALL$W (total)
+${W}  Uptime......: ${W}$(uptime -p)
+${W}  Load........: ${G}$Load1${W} (1m), ${G}${Load5}${W} (5m), ${G}${Load15}${W} (15m)
+${W}  Processes...:${W} ${G}$ProcRoot${W} (root), ${G}$ProcUser${W} (user), ${G}$ProcAll${W} (total)
 
-$W  CPU.........: $W$PROCESSOR_NAME ($G$PROCESSOR_COUNT$W vCPU)
-$W  Memory......: $G$USED$W used, $G$AVAIL$W avail, $G$TOTAL$W total$W"
+${W}  CPU.........: ${W}${ProcName} (${G}${ProcessorCount}${W} vCPU)
+${W}  Memory......: ${G}${Used}${W} used, ${G}${Avail}${W} avail, ${G}${Total}${W} total${W}
+"
