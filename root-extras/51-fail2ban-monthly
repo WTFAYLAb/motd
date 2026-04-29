@@ -38,7 +38,7 @@ for Jail in "${Jails[@]}"; do
 	Out+=$(printf "${Jail}, %+3s bans, %+3s unbans, %+3s active" ${Bans} "${Unbans}" ${Diff})"\n"
 done
 
-printf "\nfail2ban status (monthly):\n"
+printf "\nmonthly Fail2Ban stats (individual IPs, CIDR not factored):\n"
 # shellcheck disable=SC2059
 printf "$Out" \
 | column -ts $',' \
