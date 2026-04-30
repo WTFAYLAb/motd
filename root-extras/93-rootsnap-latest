@@ -9,7 +9,7 @@ Msg2=
 [[ -x $(which rootsnap-latest) ]] && Msg2=y
 
 if [[ $Msg1 || $Msg2 ]]; then
-	printf "\n%s\n" "rootsnap:"
+	printf "%s\n" "rootsnap:"
 	[[ $Msg1 ]] && $NagiosCheck | sed 's/^/  /'
 	[[ $Msg2 ]] && rootsnap-latest | sed 's/^/  /'
 fi
