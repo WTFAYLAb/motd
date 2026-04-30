@@ -1,11 +1,10 @@
 #!/bin/bash
 
 ## Use Nagios plugin to get a brief summary of apt updates
-NAG_PATH="/usr/local/nagios/libexec"
-if [[ -d ${NAG_PATH} ]]; then
-	echo
-	echo "Pending Package Updates:"
-        ${NAG_PATH}/check_apt \
+NagPath=/usr/local/nagios/libexec
+if [[ -d $NagPath ]]; then
+	printf "\n%s\n" "Pending Package Updates:"
+        $NagPath/check_apt \
 	| cut -f1 -d"|" \
 	| sed 's/^/  /'
 fi
