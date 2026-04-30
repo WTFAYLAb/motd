@@ -2,7 +2,14 @@
 
 ## LVM Snapshots
 NagiosCheck=/usr/local/src/rootsnap/check_rootsnap.sh
+Msg1=
+Msg2=
 
-printf "%s\n" "rootsnap:"
-[[ -x $NagiosCheck ]] && $NagiosCheck | sed 's/^/  /'
-/usr/local/sbin/rootsnap-latest | sed 's/^/  /'
+[[ -x $NagiosCheck ]] && Msg1=y
+[[ -x $(which rootsnap-latest) ]] && Msg2=y
+
+if [[ $Msg1 || $Msg2 ]]; then
+	printf "\n%s\n" "rootsnap:"
+	[[ $Msg1 ]] && $NagiosCheck | sed 's/^/  /'
+	[[ $Msg2 ]] && rootsnap-latest | sed 's/^/  /'
+fi
