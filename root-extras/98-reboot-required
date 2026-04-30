@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-REBOOT="/var/run/reboot-required"
+Reboot=/var/run/reboot-required
 
-if [[ -f "${REBOOT}" ]]; then
-	if [[ -s "${REBOOT}.pkgs" ]]; then
-		echo; echo "ALERT: Recently installed upgrades require a reboot:"
-		cat ${REBOOT}.pkgs
+if [[ -f $Reboot ]]; then
+	if [[ -s $Reboot.pkgs ]]; then
+		printf "\a%s\n" "ALERT: Recently installed upgrades require a reboot:"
+		cat $Reboot.pkgs | sed -e 's/^/  /'
 	fi
 fi
