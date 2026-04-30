@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## LVM Snapshots
-echo
-echo "rootsnap:"
+NagiosCheck=/usr/local/src/rootsnap/check_rootsnap.sh
+
+printf "\n%s\n" "rootsnap:"
+[[ -x $NagiosCheck ]] && $NagiosCheck | sed 's/^/  /'
 /usr/local/sbin/rootsnap-latest | sed 's/^/  /'
