@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-## Checks for apt packages that require a reboot to be installed
-## If found, displays alert with package names
+Reboot=/var/run/reboot-required
 
-REBOOT="/var/run/reboot-required"
-
-if [[ -f "$REBOOT" ]]; then
-	if [[ -s "$REBOOT.pkgs" ]]; then
-		echo; echo "ALERT: Recently installed upgrades require a reboot:"
-		cat $REBOOT.pkgs
+if [[ -f $Reboot ]]; then
+	if [[ -s $Reboot.pkgs ]]; then
+		printf "\a%s\n" "ALERT: Recently installed upgrades require a reboot:"
+		cat $Reboot.pkgs | sed -e 's/^/  /'
 	fi
 fi
