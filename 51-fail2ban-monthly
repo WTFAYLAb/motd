@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-Logfiles=(/opt/var/log/fail2ban.log /opt/var/log/fail2ban.log.1)
+## Should check if these exist before adding them to the array
+LogFile=/opt/var/log/fail2ban.log
+Logfiles=()
+[[ -f $LogFile ]] && Logfiles+=("$LogFile")
+[[ -f ${LogFile}.1 ]] && Logfiles+=("${LogFile}.1")
 mapfile -t Lines < <(
 	grep -ahioP '(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' "${Logfiles[@]}" \
 	| sort \
