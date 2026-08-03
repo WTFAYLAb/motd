@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # config
+export TERM=xterm-256color
 max_usage=90
 bar_width=50
 # colors
