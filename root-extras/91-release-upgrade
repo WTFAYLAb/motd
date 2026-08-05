@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC1091
 
 # if the current release is under development there won't be a new one
 [ -r /etc/lsb-release ] && . /etc/lsb-release
@@ -11,7 +12,7 @@ if [ "$(echo "$DISTRIB_DESCRIPTION" | cut -d' ' -f4)" = "(development" ]; then
 fi
 
 # if it is non-root user, skip
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     exit 0
 fi
 

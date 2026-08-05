@@ -2,8 +2,14 @@
 
 Reboot=$(pro system reboot-required 2>/dev/null)
 
+# if [[ $(command -v lolcat) ]]; then
+# 	Pipe="lolcat -ad 50"
+# else
+# 	Pipe="2>&1"
+# fi
+
 if [[ $Reboot == yes ]]; then
-	printf "\a\n%s\n" "Pending Kernel Update:"
+	printf "\a\n%s\n" "Pending Kernel Update:" 
 	{ /usr/lib/update-notifier/update-motd-reboot-required
 		pro system reboot-required 1>/dev/null
 	} | sed 's/^/  /'

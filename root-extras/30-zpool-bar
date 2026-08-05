@@ -23,7 +23,7 @@ for line in "${zpools[@]}"; do
     usage=$(echo "$line" | awk '{print $2}' | sed 's/%//')
     used_width=$((($usage*$bar_width)/100))
     # color is green if usage < max_usage, else red
-    if [ "${usage}" -ge "${max_usage}" ]; then
+    if [[ "${usage}" -ge "${max_usage}" ]]; then
         color=$red
     else
         color=$green
