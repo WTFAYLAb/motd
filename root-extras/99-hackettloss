@@ -20,5 +20,5 @@ HackettLogs=$(
 	| sed "s/CRITICAL/${ClrRed}CRITICAL${ClrOff}/g"
 )
 
-printf "\nLatest 'Hacketloss' entries:\n"
+printf "\nLatest 'Hackettloss' entries:\n"
 printf "%s\n" "$HackettLogs"
