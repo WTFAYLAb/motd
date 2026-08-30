@@ -1,43 +1,15 @@
 #!/usr/bin/env bash
 
-## ufw for MOTD: PATH is often minimal; avoid two-stage mapfile + printf "${arr[@]}"
-## (huge argv, IFS/glob differences vs manual HHOF_IPs=( $(...) ), and impossible CIDR>IP mismatches).
-Exec_ufw=$(command -v ufw 2>/dev/null) || true
-[[ -z $Exec_ufw && -x /usr/sbin/ufw ]] && Exec_ufw=/usr/sbin/ufw
-[[ -z $Exec_ufw && -x /sbin/ufw ]] && Exec_ufw=/sbin/ufw
-Exec_ufw=${Exec_ufw:-ufw}
-
-## Get Fail2Ban counts
-read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null | awk '
-		/Fail2Ban/ {
-			n++
-			ip = $3
-			sub(/\r$/, "", ip)
-			if (ip ~ /\//) c++
-		}
-		END { print (n - c) + 0, c + 0 }
-	'
-)
-: "${F2B_BannedIPCount:=0}"
-: "${F2B_BannedCIDRCount:=0}"
-
-## Get Helix Hall Of Fame counts
-read -r HHOF_IPCount HHOF_CIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null \
-	| awk '/DENY OUT/' \
-	| awk '
-		/HHoF/ {
-			n++
-			ip = $1
-			sub(/\r$/, "", ip)
-			if (ip ~ /\//) c++
-		}
-		END { print (n - c) + 0, c + 0 }
-	'
-)
-: "${HHOF_IPCount:=0}"
-: "${HHOF_CIDRCount:=0}"
+BanCounts=$(mktemp)
+/usr/local/sbin/showbancounts > "$BanCounts"
+F2B_BannedIPCount=$(awk 'NR==5' "$BanCounts")
+F2B_BannedCIDRCount=$(awk 'NR==8' "$BanCounts")
+HHOF_IPCount=$(awk 'NR==20' "$BanCounts")
+HHOF_CIDRCount=$(awk 'NR==23' "$BanCounts")
+TotalIPCount=$(awk 'NR==35' "$BanCounts")
+TotalCIDR_Count=$(awk 'NR==38' "$BanCounts")
+ExpCIDR_Count=$(awk 'NR==41' "$BanCounts")
+GrandTotalIP_Count=$(awk 'NR==44' "$BanCounts")
 
 ## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
 read -r WhitlistIPCount WhitlistCIDRCount < <(
@@ -129,3 +101,31 @@ SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Hall of Fame CIDR..:" " $Count"
+
+Count=$TotalIPCount
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"Total Single IPs....:" " $Count"
+
+Count=$TotalCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Total CIDR.........:" " $Count"
+
+Count=$ExpCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"Expanded CIDR IPs...:" " $Count"
+
+Count=$GrandTotalIP_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Grand Total IPs....:" " $Count"
