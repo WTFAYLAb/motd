@@ -102,6 +102,8 @@ insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n\n" \
 	"Hall of Fame CIDR..:" " $Count"
 
+## Display more banned stats
+printf "\nmore banned stats:\n"
 Count=$TotalIPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
