@@ -99,7 +99,7 @@ Count=$HHOF_CIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
-printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n\n" \
 	"Hall of Fame CIDR..:" " $Count"
 
 Count=$TotalIPCount
@@ -107,7 +107,7 @@ color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
-	"Total Single IPs....:" " $Count"
+	"  Total Single IPs..:" " $Count"
 
 Count=$TotalCIDR_Count
 color_range
@@ -121,7 +121,7 @@ color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
-	"Expanded CIDR IPs...:" " $Count"
+	"  Expanded CIDR IPs.:" " $Count"
 
 Count=$GrandTotalIP_Count
 color_range
