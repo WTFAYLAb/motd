@@ -1,43 +1,15 @@
 #!/usr/bin/env bash
 
-## ufw for MOTD: PATH is often minimal; avoid two-stage mapfile + printf "${arr[@]}"
-## (huge argv, IFS/glob differences vs manual HHOF_IPs=( $(...) ), and impossible CIDR>IP mismatches).
-Exec_ufw=$(command -v ufw 2>/dev/null) || true
-[[ -z $Exec_ufw && -x /usr/sbin/ufw ]] && Exec_ufw=/usr/sbin/ufw
-[[ -z $Exec_ufw && -x /sbin/ufw ]] && Exec_ufw=/sbin/ufw
-Exec_ufw=${Exec_ufw:-ufw}
-
-## Get Fail2Ban counts
-read -r F2B_BannedIPCount F2B_BannedCIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null | awk '
-		/Fail2Ban/ {
-			n++
-			ip = $3
-			sub(/\r$/, "", ip)
-			if (ip ~ /\//) c++
-		}
-		END { print (n - c) + 0, c + 0 }
-	'
-)
-: "${F2B_BannedIPCount:=0}"
-: "${F2B_BannedCIDRCount:=0}"
-
-## Get Helix Hall Of Fame counts
-read -r HHOF_IPCount HHOF_CIDRCount < <(
-	COLUMNS="${COLUMNS:-320}" "$Exec_ufw" status 2>/dev/null \
-	| awk '/DENY OUT/' \
-	| awk '
-		/HHoF/ {
-			n++
-			ip = $1
-			sub(/\r$/, "", ip)
-			if (ip ~ /\//) c++
-		}
-		END { print (n - c) + 0, c + 0 }
-	'
-)
-: "${HHOF_IPCount:=0}"
-: "${HHOF_CIDRCount:=0}"
+BanCounts=$(mktemp)
+/usr/local/sbin/showbancounts > "$BanCounts"
+F2B_BannedIPCount=$(awk 'NR==5' "$BanCounts")
+F2B_BannedCIDRCount=$(awk 'NR==8' "$BanCounts")
+HHOF_IPCount=$(awk 'NR==20' "$BanCounts")
+HHOF_CIDRCount=$(awk 'NR==23' "$BanCounts")
+TotalIPCount=$(awk 'NR==35' "$BanCounts")
+TotalCIDR_Count=$(awk 'NR==38' "$BanCounts")
+ExpCIDR_Count=$(awk 'NR==41' "$BanCounts")
+GrandTotalIP_Count=$(awk 'NR==44' "$BanCounts")
 
 ## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
 read -r WhitlistIPCount WhitlistCIDRCount < <(
@@ -64,25 +36,25 @@ ClrOff=$(tput sgr0)
 color_range() {
 	if [[ Count -eq 0 ]]; then
 		ClrRng=82
-	elif (( Count >= 1 && Count <= 100 )); then
+	elif (( Count >= 1 && Count <= 200 )); then
 		ClrRng=154
-	elif (( Count >= 101 && Count <= 200 )); then
+	elif (( Count >= 201 && Count <= 400 )); then
 		ClrRng=184
-	elif (( Count >= 201 && Count <= 300 )); then
+	elif (( Count >= 401 && Count <= 600 )); then
 		ClrRng=190
-	elif (( Count >= 301 && Count <= 400 )); then
+	elif (( Count >= 601 && Count <= 800 )); then
 		ClrRng=226
-	elif (( Count >= 401 && Count <= 500 )); then
+	elif (( Count >= 801 && Count <= 1000 )); then
 		ClrRng=220
-	elif (( Count >= 501 && Count <= 600 )); then
+	elif (( Count >= 1001 && Count <= 2000 )); then
 		ClrRng=214
-	elif (( Count >= 601 && Count <= 700 )); then
+	elif (( Count >= 2001 && Count <= 4000 )); then
 		ClrRng=208
-	elif (( Count >= 701 && Count <= 800 )); then
+	elif (( Count >= 4001 && Count <= 8000 )); then
 		ClrRng=202
-	elif (( Count >= 801 && Count <= 900 )); then
+	elif (( Count >= 8001 && Count <= 16000 )); then
 		ClrRng=160
-	elif (( Count >= 901 )); then
+	elif (( Count >= 16001 )); then
 		ClrRng=196
 	fi
 }
@@ -127,5 +99,33 @@ Count=$HHOF_CIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
-printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n\n" \
 	"Hall of Fame CIDR..:" " $Count"
+
+Count=$TotalIPCount
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"  Total Single IPs..:" " $Count"
+
+Count=$TotalCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Total CIDR.........:" " $Count"
+
+Count=$ExpCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"  Expanded CIDR IPs.:" " $Count"
+
+Count=$GrandTotalIP_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Grand Total IPs....:" " $Count"
