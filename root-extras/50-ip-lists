@@ -99,7 +99,7 @@ Count=$HHOF_CIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
-printf "%-20s${SetClrRange}%-10s${ClrOff}\n\n" \
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
 	"Hall of Fame CIDR..:" " $Count"
 
 ## Display more banned stats
