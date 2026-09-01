@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ## Get load averages
-IFS=" " read -r Load1 Load5 Load15 <<<"$(
+IFS=" " read -r Load1 Load5 Load15 <<< "$(
 	cat /proc/loadavg | awk '{ print $1,$2,$3 }'
 )"
 
 ## Get free memory
-IFS=" " read -r Used Avail Total <<<"$(
+IFS=" " read -r Used Avail Total <<< "$(
 	free -htm | grep "Mem" | awk '{ print $3,$7,$2 }'
 )"
 
