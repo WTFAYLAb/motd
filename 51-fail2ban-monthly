@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
 ## Should check if these exist before adding them to the array
 LogFile=/opt/var/log/fail2ban.log
