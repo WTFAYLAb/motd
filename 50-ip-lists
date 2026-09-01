@@ -18,7 +18,7 @@ GrandTotalIP_Count=$(awk 'NR==44' "$BanCounts")
 rm -f "$BanCounts"
 
 ## Get Whitelist counts
-showwhitelist | grep -vE '^\s*$|^\s*#|127\.' > "$Whitelist"
+/opt/local/bin/showwhitelist | grep -vE '^\s*$|^\s*#|127\.' > "$Whitelist"
 
 WhitelistedIPs=$(
 	grep -v / "$Whitelist"
