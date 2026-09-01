@@ -1,64 +1,42 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
-## Get Fail2Ban counts
-Fail2BanIPs=$(
-	/sbin/route -n \
-	| grep '\*' \
-	| awk '{ print $1,$4,$5 }' \
-	| grep -v " 0" \
-	| grep -v ".0 "
-)
-Fail2banIPCount=$(
-	grep -v '/' <<< "$Fail2BanIPs" | grep -cve '^\s*$'
-)
-Fail2BanCIDR=$(
-	/sbin/route -n \
-	| grep '\*' \
-	| awk '{ print $1,$4,$5 }' \
-	| grep -v " 0" \
-	| grep ".0 U "
-)
-Fail2BanCIDRCount=$(
-	grep -v '/' <<< "$Fail2BanCIDR" | grep -cve '^\s*$'
-)
+BanCounts=$(mktemp)
+Whitelist=$(mktemp)
 
-## Get Helix Hall Of Fame counts
-HHoF_IPs=$(
-	/sbin/route -n \
-	| grep '\*' \
-	| awk '{ print $1,$4,$5}' \
-	| grep "UH" \
-	| grep " 0"
-)
-HHoF_IPCount=$(
-	grep -cve '^\s*$' <<< "$HHoF_IPs"
-)
-HHoF_CIDR=$(
-	/sbin/route -n \
-	| grep '\*' \
-	| awk '{ print $1,$4,$5 }' \
-	| grep " U " \
-	| grep " 0"
-)
-HHoF_CIDRCount=$(
-	grep -cve '^\s*$' <<< "$HHoF_CIDR"
-)
+## Get ban counts
+/opt/local/bin/showbancounts > "$BanCounts"
+F2B_BannedIPCount=$(awk 'NR==5' "$BanCounts")
+F2B_BannedCIDRCount=$(awk 'NR==8' "$BanCounts")
+HHOF_IPCount=$(awk 'NR==20' "$BanCounts")
+HHOF_CIDRCount=$(awk 'NR==23' "$BanCounts")
+TotalIPCount=$(awk 'NR==35' "$BanCounts")
+TotalCIDR_Count=$(awk 'NR==38' "$BanCounts")
+ExpCIDR_Count=$(awk 'NR==41' "$BanCounts")
+GrandTotalIP_Count=$(awk 'NR==44' "$BanCounts")
+
+## Cleanup
+rm -f "$BanCounts"
 
 ## Get Whitelist counts
+showwhitelist | grep -vE '^\s*$|^\s*#|127\.' > "$Whitelist"
+
 WhitelistedIPs=$(
-	showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep -v /
+	grep -v / "$Whitelist"
 )
 WhitelistedIPsCount=$(
 	grep -cve '^\s*$' <<< "$WhitelistedIPs"
 )
 WhitelistedCIDR=$(
-	showwhitelist | grep -vE '^\s*$|^\s*#|127\.' | grep /
+	grep / "$Whitelist"
 )
 WhitelistedCIDRCount=$(
 	grep -cve '^\s*$' <<< "$WhitelistedCIDR"
 )
 
-## Set colors
+## Cleanup
+rm -f "$Whitelist"
+
+## Set display colors
 export TERM=xterm-256color
 ClrBlu=$(tput setaf 45)
 ClrOff=$(tput sgr0)
@@ -66,29 +44,30 @@ ClrOff=$(tput sgr0)
 color_range() {
 	if [[ Count -eq 0 ]]; then
 		ClrRng=82
-	elif (( Count >= 1 && Count <= 100 )); then
+	elif (( Count >= 1 && Count <= 200 )); then
 		ClrRng=154
-	elif (( Count >= 101 && Count <= 200 )); then
+	elif (( Count >= 201 && Count <= 400 )); then
 		ClrRng=184
-	elif (( Count >= 201 && Count <= 300 )); then
+	elif (( Count >= 401 && Count <= 600 )); then
 		ClrRng=190
-	elif (( Count >= 301 && Count <= 400 )); then
+	elif (( Count >= 601 && Count <= 800 )); then
 		ClrRng=226
-	elif (( Count >= 401 && Count <= 500 )); then
+	elif (( Count >= 801 && Count <= 1000 )); then
 		ClrRng=220
-	elif (( Count >= 501 && Count <= 600 )); then
+	elif (( Count >= 1001 && Count <= 2000 )); then
 		ClrRng=214
-	elif (( Count >= 601 && Count <= 700 )); then
+	elif (( Count >= 2001 && Count <= 4000 )); then
 		ClrRng=208
-	elif (( Count >= 701 && Count <= 800 )); then
+	elif (( Count >= 4001 && Count <= 8000 )); then
 		ClrRng=202
-	elif (( Count >= 801 && Count <= 900 )); then
+	elif (( Count >= 8001 && Count <= 16000 )); then
 		ClrRng=160
-	elif (( Count >= 901 )); then
+	elif (( Count >= 16001 )); then
 		ClrRng=196
 	fi
 }
 
+## Display a 'thousands' comma
 insert_comma() {
 	[[ Count -gt 999 ]] && Count=$(
 		echo "$Count" | awk '{ printf "%\047d\n", $1 }'
@@ -97,43 +76,67 @@ insert_comma() {
 
 ## Display Whitelist Counts
 printf "\ncurrently whitelisted:\n"
-Count=$WhitelistedIPsCount
-insert_comma
-printf "%-20s${ClrBlu}%-10s${ClrOff}" \
-	"  Whitelisted IPs...:" " $Count" \
-
-Count=$WhitelistedCIDRCount
-insert_comma
-printf "%-20s${ClrBlu}%-10s${ClrOff}\n" \
- 	"Whitelisted CIDR...:" " $Count"
+printf "%-20s${ClrBlu}%-10s${ClrOff} %-20s${ClrBlu}%-10s${ClrOff}\n" \
+	"  Whitelisted IPs...:" " ${WhitelistedIPsCount}" \
+	"Whitelisted CIDR...:" " ${WhitelistedCIDRCount}"
 
 ## Display Fail2Ban Counts
 printf "\ncurrently banned:\n"
-Count=$Fail2banIPCount
+Count=$F2B_BannedIPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
-	"  Fail2Ban IPs......:" " $Count"
+	"  Fail2Ban IPs......:" " ${Count}"
 
-Count=$Fail2BanCIDRCount
+Count=$F2B_BannedCIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
-	"Fail2Ban CIDR......:" " $Count"
+	"Fail2Ban CIDR......:" " ${Count}"
 
 ## Display Helix Hall of Fame Counts
-Count=$HHoF_IPCount
+Count=$HHOF_IPCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff} " \
-	"  Hall of Fame IPs..:" " $Count"
+	"  Hall of Fame IPs..:" " ${Count}"
 
-Count=$HHoF_CIDRCount
+Count=$HHOF_CIDRCount
 color_range
 SetClrRange=$(tput setaf "$ClrRng")
 insert_comma
 printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
-	"Hall of Fame CIDR..:" " $Count"
+	"Hall of Fame CIDR..:" " ${Count}"
+
+## Display more banned stats
+printf "\nmore banned stats:\n"
+Count=$TotalIPCount
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"  Total Single IPs..:" " ${Count}"
+
+Count=$TotalCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Total CIDR.........:" " ${Count}"
+
+Count=$ExpCIDR_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff} " \
+	"  Expanded CIDR IPs.:" " ${Count}"
+
+Count=$GrandTotalIP_Count
+color_range
+SetClrRange=$(tput setaf "$ClrRng")
+insert_comma
+printf "%-20s${SetClrRange}%-10s${ClrOff}\n" \
+	"Grand Total IPs....:" " ${Count}"
