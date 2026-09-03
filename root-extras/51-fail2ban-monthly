@@ -48,6 +48,6 @@ for Jail in "${Jails[@]}"; do
 done
 
 printf "\nmonthly Fail2Ban stats (individual IPs, CIDR not factored):\n"
-printf '%s\n' "${Out}" \
+printf '%s\n' "${Out[@]}" \
 | column -ts $',' \
 | sed -e 's/^/  /'
