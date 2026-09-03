@@ -4,11 +4,11 @@
 max_usage=90
 bar_width=50
 # colors
-white="\e[39m"
+white=$(tput setaf 255)
 green=$(tput setaf 46)
 red=$(tput setaf 196)
-dim="\e[2m"
-undim="\e[0m"
+dim=$(tput dim)
+undim=dim=$(tput sgr0)
 
 # disk usage: ignore zfs, squashfs & tmpfs
 mapfile -t dfs < <(
