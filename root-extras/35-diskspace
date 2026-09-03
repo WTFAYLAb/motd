@@ -8,7 +8,7 @@ white=$(tput setaf 255)
 green=$(tput setaf 46)
 red=$(tput setaf 196)
 dim=$(tput dim)
-undim=dim=$(tput sgr0)
+undim=$(tput sgr0)
 
 # disk usage: ignore zfs, squashfs & tmpfs
 mapfile -t dfs < <(
