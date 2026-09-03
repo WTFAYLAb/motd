@@ -44,10 +44,10 @@ for Jail in "${Jails[@]}"; do
 	Out+=$(
 		printf "${Jail}, %+5s bans, %+5s unbans, %+3s active" \
 			${Bans} "${Unbans}" ${Diff}
-	)
+	)'\n'
 done
 
 printf "\nmonthly Fail2Ban stats (individual IPs, CIDR not factored):\n"
-printf '%s\n' "${Out[@]}" \
+printf %s "${Out}" \
 | column -ts $',' \
 | sed -e 's/^/  /'
