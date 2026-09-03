@@ -46,7 +46,7 @@ PROCESSOR_COUNT=$(
 	| wc -l
 )
 
-W="\e[0;39m"
+W=$(tput setaf 255)
 G=$(tput setaf 46)
 
 print '%s\n''%s\n''%s\n\n''%s\n''%s%s\n''%s\n''%s\n\n''%s%s\n''%s%s\n' \
