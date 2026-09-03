@@ -49,7 +49,7 @@ PROCESSOR_COUNT=$(
 W=$(tput setaf 255)
 G=$(tput setaf 46)
 
-printf '%s\n''%s\n''%s\n\n''%s\n''%s%s\n''%s\n''%s\n\n''%s%s\n''%s%s\n' \
+printf '%s\n''%s\n''%s\n''\n''%s\n''%s%s\n''%s%s\n\n''%s%s\n''%s%s\n' \
 	"${W}system info:" \
 	"${W}  Distro......: ${W}$(
 		cat /etc/*release \
@@ -58,11 +58,13 @@ printf '%s\n''%s\n''%s\n\n''%s\n''%s%s\n''%s\n''%s\n\n''%s%s\n''%s%s\n' \
 		| sed 's/"//g'
 	)" \
 	"${W}  Kernel......: ${W}$(uname -sr)" \
+	\
 	"${W}  Uptime......: ${W}$(uptime -p)" \
 	"${W}  Load........: ${G}${LOAD1}${W}" \
 	" (1m), ${G}${LOAD5}${W} (5m), ${G}${LOAD15}${W} (15m)" \
 	"${W}  Processes...:${W} ${G}${PROCESS_ROOT}${W} (root)," \
 	" ${G}${PROCESS_USER}${W} (user), ${G}${PROCESS_ALL}${W} (total)" \
+	\
 	"${W}  CPU.........: ${W}${PROCESSOR_NAME}" \
 	" (${G}${PROCESSOR_COUNT}${W} vCPU)" \
 	"${W}  Memory......: ${G}${USED}${W} used," \
