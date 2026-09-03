@@ -22,15 +22,15 @@ PROCESS=$(
 	| awk '{ print $2 " " $1 }'
 )
 PROCESS_ALL=$(
-	print %s "${PROCESS}" | awk '{ print $2 }' \
+	printf %s "${PROCESS}" | awk '{ print $2 }' \
 	| awk '{ SUM += $1} END { print SUM }'
 )
 PROCESS_ROOT=$(
-	print %s "${PROCESS}" | grep root \
+	printf %s "${PROCESS}" | grep root \
 	| awk '{ print $2 }'
 )
 PROCESS_USER=$(
-	print %s "${PROCESS}" | grep -v root \
+	printf %s "${PROCESS}" | grep -v root \
 	| awk '{ print $2 }' \
 	| awk '{ SUM += $1} END { print SUM }'
 )
@@ -49,7 +49,7 @@ PROCESSOR_COUNT=$(
 W=$(tput setaf 255)
 G=$(tput setaf 46)
 
-print '%s\n''%s\n''%s\n\n''%s\n''%s%s\n''%s\n''%s\n\n''%s%s\n''%s%s\n' \
+printf '%s\n''%s\n''%s\n\n''%s\n''%s%s\n''%s\n''%s\n\n''%s%s\n''%s%s\n' \
 	"${W}system info:" \
 	"${W}  Distro......: ${W}$(
 		cat /etc/*release \
