@@ -21,4 +21,4 @@ HackettLogs=$(
 )
 
 printf "\nLatest 'Hacketloss' entries:\n"
-printf "%s\n" "$HackettLogs"
+printf "%s\n" "${HackettLogs}"

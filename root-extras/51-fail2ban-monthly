@@ -2,12 +2,15 @@
 
 Logfiles=(/var/log/fail2ban.log /var/log/fail2ban.log.1)
 mapfile -t Lines < <(
-	grep -ahioP '(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' "${Logfiles[@]}" \
+	grep -ahioP \
+		'(\[[a-z-]+\]) ?(?:restore)? (ban|unban)' \
+		"${Logfiles[@]}" \
 	| sort \
 	| uniq -c
 )
 mapfile -t Jails < <(
-	printf -- '%s\n' "${Lines[@]}" \
+	printf -- '%s\n' \
+		"${Lines[@]}" \
 	| grep -oP '\[\K[^\]]+' \
 	| sort -u
 )
@@ -15,17 +18,20 @@ mapfile -t Jails < <(
 Out=
 for Jail in "${Jails[@]}"; do
 	Bans=$(
-		printf -- '%s\n' "${Lines[@]}" \
+		printf -- '%s\n' \
+			"${Lines[@]}" \
 		| grep -iP "[[:digit:]]+ \[$Jail\] ban" \
 		| awk '{print $1}'
 	)
 	Restores=$(
-		printf -- '%s\n' "${Lines[@]}" \
+		printf -- '%s\n' \
+			"${Lines[@]}" \
 		| grep -iP "[[:digit:]]+ \[$Jail\] restore ban" \
 		| awk '{print $1}'
 	)
 	Unbans=$(
-		printf -- '%s\n' "${Lines[@]}" \
+		printf -- '%s\n' \
+			"${Lines[@]}" \
 		| grep -iP "[[:digit:]]+ \[$Jail\] unban" \
 		| awk '{print $1}'
 	)
@@ -35,11 +41,10 @@ for Jail in "${Jails[@]}"; do
 	Bans=$(( Bans + Restores ))
 	Diff=$(( Bans - Unbans ))
 	[[ $Diff -lt 0 ]] && Diff=0
-	Out+=$(printf "${Jail}, %+5s bans, %+5s unbans, %+3s active" ${Bans} "${Unbans}" ${Diff})"\n"
+	Out+=$(printf "${Jail}, %+5s bans, %+5s unbans, %+5s active" ${Bans} "${Unbans}" ${Diff})"\n"
 done
 
 printf "\nmonthly Fail2Ban stats (individual IPs, CIDR not factored):\n"
-# shellcheck disable=SC2059
-printf "$Out" \
+printf "${Out}" \
 | column -ts $',' \
 | sed -e 's/^/  /'
