@@ -1,46 +1,59 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-## Config
-MaxUsage=90
-BarWidth=50
+# config
+max_usage=90
+bar_width=50
 # colors
-ClrWht="\e[39m"
-ClrGrn=$(tput setaf 46)
-ClrRed=$(tput setaf 196)
-ClrDim="\e[2m"
-ClrOff="\e[0m"
+white=$(tput setaf 255)
+green=$(tput setaf 46)
+red=$(tput setaf 196)
+dim=$(tput dim)
+undim=$(tput sgr0)
 
-## Disk usage: ignore ZFS, SquashFS & TmpFS
-mapfile -t DFS < <(
-	df -H -x zfs -x squashfs -x tmpfs -x devtmpfs -x overlay --output=target,pcent,size \
+# disk usage: ignore zfs, squashfs & tmpfs
+mapfile -t dfs < <(
+	df -H \
+        -x zfs \
+        -x squashfs \
+        -x tmpfs \
+        -x devtmpfs \
+        -x overlay \
+        --output=target,pcent,size \
 	| sed '/\/home\//d' \
-	| sed '/\/efi\//d' \
+	| sed '/\/var\//d' \
 	| tail -n+2
 )
 printf "\ndisk usage:\n"
 
-for Line in "${DFS[@]}"; do
+for line in "${dfs[@]}"; do
     # get disk usage
-    Usage=$(echo "$Line" | awk '{print $2}' | sed 's/%//')
-    UsedWidth=$((($Usage*$BarWidth)/100))
-    # color is ClrGrn if usage < MaxUsage, else ClrRed
-    if [[ $usage -ge $MaxUsage ]]; then
-        color=$ClrRed
+    usage=$(
+        printf '%s\n' "${line}" \
+        | awk '{print $2}' \
+        | sed 's/%//'
+    )
+    used_width=$(( ( usage * bar_width ) / 100 ))
+    # color is green if usage < max_usage, else red
+    if [[ $usage -ge $max_usage ]]; then
+        color=$red
     else
-        color=$ClrGrn
+        color=$green
     fi
-    ## print green/red bar until used width
-    Bar="[${color}"
-    for ((i=0; i<$UsedWidth; i++)); do
-        Bar+="="
+    # print green/red bar until used_width
+    bar="[${color}"
+    for (( i=0; i<used_width; i++ )); do
+        bar+="="
     done
-    # print dimmmed Bar until end
-    Bar+="${ClrWht}${ClrDim}"
-    for ((i=$UsedWidth; i<$BarWidth; i++)); do
-        Bar+="="
+    # print dimmmed bar until end
+    bar+="${white}${dim}"
+    for (( i=used_width; i<bar_width; i++ )); do
+        bar+="="
     done
-    Bar+="${ClrOff}]"
-    # print usage Line & Bar
-    echo "${Line}" | awk '{ printf("%-31s%+3s used out of %+4s\n", $1, $2, $3); }' | sed -e 's/^/  /'
-    echo -e "${Bar}" | sed -e 's/^/  /'
+    bar+="${undim}]"
+    # print usage line & bar
+    printf '%s\n' "${line}" \
+        | awk '{ printf("%-31s%+3s used out of %+4s\n", $1, $2, $3); }' \
+        | sed -e 's/^/  /'
+    printf '%s\n' "${bar}" \
+    | sed -e 's/^/  /'
 done

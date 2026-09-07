@@ -13,7 +13,8 @@ GrandTotalIP_Count=$(awk 'NR==44' "$BanCounts")
 
 ## Get Whitelist counts (one pass: same filters as grep -vE + slash = CIDR)
 read -r WhitlistIPCount WhitlistCIDRCount < <(
-	showwhitelist 2>/dev/null | awk '
+	showwhitelist 2>/dev/null \
+	| awk '
 		/^[[:space:]]*$/ { next }
 		/^[[:space:]]*#/ { next }
 		/127\./ { next }
