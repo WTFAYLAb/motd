@@ -18,28 +18,36 @@ Because the MOTD is built dynamically upon login, `lolcat` requires additional o
 | `export TERM=xterm-256color` | Use as a prefix in MOTD scripts to display colors when using the `tput` command | 
 
 Examples:
+
 ```bash
 LANG=en_US.UTF-8 lolcat -f he7ix-logo.txt
 ```
+
 ```bash
 toilet -f smslant "$(hostname)" | lolcat -f
 ```
+
 ### Testing
 The `run-parts` command is the easiest way to test the MOTD scripts as it will run all scripts in a directory in alphanumeric order:
-```console
+
+```bash
 run-parts /etc/update-motd.d
 ```
+
 ### Customize your MOTD
 Adding your own MOTD is as easy as placing an executable script in `/etc/update-motd.d/`. The filename must be formatted as: **Two digits, hyphen, unique name**. Example:
+
 ```console
 20-uptime
 ```
+
 #### Rules
 * Files can not contain an extension (e.g.: `.sh`, `.py`)
 * The file can be *any* executable type your system is capable of running, usually defined by the she bang (`#!`) on the first line
 * Scripts will execute in numerical order
 
-To make a MOTD script executable: 
-```console
+To make a MOTD script executable:
+
+```bash
 chmod +x /etc/update-motd.d/{{nn-SCRIPT-NAME}}
 ```
